@@ -4,6 +4,5 @@
 	<classpathentry excluding="ICCompiler/|.git/" kind="src" path=""/>
 	<classpathentry kind="src" path=".git"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ICInterpreter"/>
 	<classpathentry kind="output" path="bin1"/>
 </classpath>
