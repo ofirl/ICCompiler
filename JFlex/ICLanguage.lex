@@ -1,5 +1,8 @@
 /* JFlex example: part of Java language lexer specification */
+package JFlex;
+
 import java_cup.runtime.*;
+import iCCompiler.*;
 
 /**
 * This class is a simple example lexer.
@@ -12,14 +15,15 @@ import java_cup.runtime.*;
 %cup
 %line
 %column
+%public
 	
 %{
 	StringBuffer string = new StringBuffer();
-	private Symbol symbol(int type) {
-		return new Symbol(type, yyline, yycolumn);
+	private Token symbol(int type, String tag) {
+		return new Token(type, tag, yyline, yycolumn);
 	}
-	private Symbol symbol(int type, Object value) {
-		return new Symbol(type, yyline, yycolumn, value);
+	private Token symbol(int type, Object value, String tag) {
+		return new Token(type, tag, yyline, yycolumn, value);
 	}
 %}
 	
@@ -36,6 +40,14 @@ import java_cup.runtime.*;
 	CommentContent = ( [^*] | \*+ [^/*] )*
 	Identifier = [:jletter:] [:jletterdigit:]*
 	DecIntegerLiteral = 0 | [1-9][0-9]*
+	
+	/* Parenthesis */
+	OpenParenthesis = \(
+	CloseParenthesis = \)
+	
+	/* Punctuation */
+	Colon = :
+	SemiColon = ;
 %state STRING
 	
 %%
@@ -48,18 +60,26 @@ import java_cup.runtime.*;
 	
 	<YYINITIAL> {
 		/* identifiers */
-		{Identifier} { return symbol(sym.IDENTIFIER); }
+		{Identifier} { return symbol(sym.ID, "ID"); }
 		
 		/* literals */
-		{DecIntegerLiteral} { return symbol(sym.INTEGER_LITERAL); }
+		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER"); }
 		/* \" { string.setLength(0); yybegin(STRING); } */
 		
 		/* operators */
-		":=" { return symbol(sym.EQ); }
-		"+" { return symbol(sym.PLUS); }
-		"-" { return symbol(sym.MINUS); }
-		"*" { return symbol(sym.MULTIPLY); }
-		"\\" { return symbol(sym.DIVIDE); }
+		":=" { return symbol(sym.EQ, "="); }
+		"+" { return symbol(sym.PLUS, "+"); }
+		"-" { return symbol(sym.MINUS, "-"); }
+		"*" { return symbol(sym.MULTIPLY, "*"); }
+		"\\" { return symbol(sym.DIVIDE, "\\"); }
+		
+		/* Punctuation */
+		{Colon} { return symbol(sym.COLON, ":"); }
+		{SemiColon} { return symbol(sym.SEMI, ";"); }
+		
+		/* Parenthesis */
+		{OpenParenthesis} { return symbol(sym.OPENPARENTEHSIS, "("); }
+		{CloseParenthesis} { return symbol(sym.CLOSEPARENTHESIS, ")"); }
 		
 		/* comments */
 		{Comment} { /* ignore */ }

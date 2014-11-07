@@ -8,11 +8,23 @@ public class Token extends Symbol {
 	private int line;
 	private int column;
 	private String tag;
-	private String value;
+	private Object value;
 
-	public Token(int sym_num) { // not used, just so there wont be errors
+	public Token(int sym_num, String tag, int line, int column) {
 		super(sym_num);
-		// TODO Auto-generated constructor stub
+		id = sym_num;
+		this.line = line;
+		this.column = column;
+		this.tag = tag;
+	}
+	
+	public Token(int sym_num, String tag, int line, int column, Object value) {
+		super(sym_num);
+		id = sym_num;
+		this.line = line;
+		this.column = column;
+		this.value = value;
+		this.tag = tag;
 	}
 
 	public int getId() {
@@ -31,7 +43,7 @@ public class Token extends Symbol {
 		return tag;
 	}
 
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
 }

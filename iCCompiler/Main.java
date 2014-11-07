@@ -2,18 +2,19 @@ package iCCompiler;
 
 import java.io.*;
 import java_cup.runtime.Symbol;
+import JFlex.*;
 
 public class Main {
 	
 	public static void main(String[] args) {
-	    Symbol currToken;
+	    Token currToken;
 	    try {
 	        FileReader txtFile = new FileReader(args[0]);
 	        Lexer scanner = new Lexer(txtFile); 
 	        //Lexer will be the class name when we compile our lexer
 	        do {
 	            currToken = scanner.next_token();
-	            //TODO : create a token from the symbol.
+	            PrintToken("" + currToken.getId(), currToken.getTag(), currToken.getLine(), currToken.getColumn());
 	            
 	        } while (currToken.sym != sym.EOF);
 	    
