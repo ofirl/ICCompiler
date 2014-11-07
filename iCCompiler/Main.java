@@ -9,7 +9,6 @@ public class Main {
 	
 	/* This function was given in the exercise. */
 	public static void PrintToken(String token,String tag , int line , int column) {
-		System.out. println (token+"nt"+tag+"nt"+line+":"+column);
-		
+		System.out. println (token+"/t"+tag+"/t"+line+":"+column);	
 	}
 }
