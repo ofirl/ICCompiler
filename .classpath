@@ -3,6 +3,6 @@
 	<classpathentry excluding="ICCompiler/|.git/" kind="src" path=""/>
 	<classpathentry kind="src" path=".git"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="/home/ofirl/CUP/java-cup-11b-runtime.jar"/>
+	<classpathentry kind="lib" path="CupJars/java-cup-11b-runtime.jar"/>
 	<classpathentry kind="output" path="bin1"/>
 </classpath>
