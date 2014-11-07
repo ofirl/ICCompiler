@@ -1,6 +1,6 @@
 package iCCompiler;
 
-public class Main {
+public class MainTest {
 	
 	public static void main(String[] args)
 	{
