@@ -4,6 +4,11 @@ import java_cup.runtime.Symbol;
 
 public class Token extends Symbol {
 	
+	private int line;
+	private int column;
+	private String tag;
+	private String value;
+	
 	public Token(int sym_num) { //not used, just so there wont be errors
 		super(sym_num);
 		// TODO Auto-generated constructor stub
@@ -13,11 +18,19 @@ public class Token extends Symbol {
 		return 0;
 	}
 
-	public Object getValue() {
-		return null;
-	}
-
 	public int getLine() {
-		return 0;
+		return line;
+	}
+	
+	public int getColumn() {
+		return column;
+	}
+	
+	public String getTag() {
+		return tag;
+	}
+	
+	public String getValue() {
+		return value;
 	}
 }
