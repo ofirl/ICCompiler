@@ -6,22 +6,22 @@ import java_cup.runtime.*;
 */
 
 %%
-	%class Lexer
-	%unicode
-	%type Token
-	%cup
-	%line
-	%column
+%class Lexer
+%unicode
+%type Token
+%cup
+%line
+%column
 	
-	%{
-		StringBuffer string = new StringBuffer();
-		private Symbol symbol(int type) {
-			return new Symbol(type, yyline, yycolumn);
-		}
-		private Symbol symbol(int type, Object value) {
-			return new Symbol(type, yyline, yycolumn, value);
-		}
-	%}
+%{
+	StringBuffer string = new StringBuffer();
+	private Symbol symbol(int type) {
+		return new Symbol(type, yyline, yycolumn);
+	}
+	private Symbol symbol(int type, Object value) {
+		return new Symbol(type, yyline, yycolumn, value);
+	}
+%}
 	
 	LineTerminator = \r|\n|\r\n
 	InputCharacter = [^\r\n]
@@ -36,7 +36,7 @@ import java_cup.runtime.*;
 	CommentContent = ( [^*] | \*+ [^/*] )*
 	Identifier = [:jletter:] [:jletterdigit:]*
 	DecIntegerLiteral = 0 | [1-9][0-9]*
-	%state STRING
+%state STRING
 	
 %%
 	
@@ -67,7 +67,7 @@ import java_cup.runtime.*;
 		/* whitespace */
 		{WhiteSpace} { /* ignore */ }
 	}
-	/** unnecessary for out purposes */
+	/** unnecessary for out purposes
 	*<STRING> {
 	*	\" { yybegin(YYINITIAL);
 	*		return symbol(sym.STRING_LITERAL,
