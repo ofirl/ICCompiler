@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="ICCompiler/|.git/" kind="src" path=""/>
+	<classpathentry excluding="ICCompiler/|.git/|JFlex/jflex-1/6/0/|JFlex/jflex-1.6.0/" kind="src" path=""/>
 	<classpathentry kind="src" path=".git"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="CupJars/java-cup-11b-runtime.jar"/>
+	<classpathentry exported="true" kind="lib" path="CupJars/java-cup-11b-runtime.jar"/>
 	<classpathentry kind="output" path="bin1"/>
 </classpath>
