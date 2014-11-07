@@ -4,7 +4,7 @@ public class Main {
 	
 	public static void main(String[] args)
 	{
-		System.out.println("yay, we got a git repository");
+		System.out.println("yay, we got a git repository!");
 	}
 	
 	/* This function was given in the exercise. */
