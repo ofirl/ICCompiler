@@ -8,7 +8,7 @@ public class Token extends Symbol {
 	private int line;
 	private int column;
 	private String tag;
-	private Object value;
+	private String value;
 
 	public Token(int sym_num, String tag, int line, int column) {
 		super(sym_num);
@@ -18,7 +18,7 @@ public class Token extends Symbol {
 		this.tag = tag;
 	}
 	
-	public Token(int sym_num, String tag, int line, int column, Object value) {
+	public Token(int sym_num, String tag, int line, int column, String value) {
 		super(sym_num);
 		id = sym_num;
 		this.line = line;
@@ -43,7 +43,7 @@ public class Token extends Symbol {
 		return tag;
 	}
 
-	public Object getValue() {
+	public String getValue() {
 		return value;
 	}
 }

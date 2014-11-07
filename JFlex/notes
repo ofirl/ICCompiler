@@ -14,7 +14,4 @@ it will throw an error in the EOF function, switch the "return new Symbol(...);"
 "return new Token(sym.EOF, "EOF", 0 , 0);"
 
 To Do list :
-1. needs to pass the actual token to the symbol constructor, will do that tomorrow.
-	for debugging purposes, it currently prints the integer that represents 
-	the token instead of the token. 
 2. check what other tags are needed.

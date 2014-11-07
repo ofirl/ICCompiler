@@ -22,7 +22,7 @@ import iCCompiler.*;
 	private Token symbol(int type, String tag) {
 		return new Token(type, tag, yyline, yycolumn);
 	}
-	private Token symbol(int type, Object value, String tag) {
+	private Token symbol(int type, String tag, String value) {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
 %}
@@ -60,26 +60,26 @@ import iCCompiler.*;
 	
 	<YYINITIAL> {
 		/* identifiers */
-		{Identifier} { return symbol(sym.ID, "ID"); }
+		{Identifier} { return symbol(sym.ID, "ID", yytext()); }
 		
 		/* literals */
-		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER"); }
+		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER", yytext()); }
 		/* \" { string.setLength(0); yybegin(STRING); } */
 		
 		/* operators */
-		":=" { return symbol(sym.EQ, "="); }
-		"+" { return symbol(sym.PLUS, "+"); }
-		"-" { return symbol(sym.MINUS, "-"); }
-		"*" { return symbol(sym.MULTIPLY, "*"); }
-		"\\" { return symbol(sym.DIVIDE, "\\"); }
+		":=" { return symbol(sym.EQ, "=", yytext()); }
+		"+" { return symbol(sym.PLUS, "+", yytext()); }
+		"-" { return symbol(sym.MINUS, "-", yytext()); }
+		"*" { return symbol(sym.MULTIPLY, "*", yytext()); }
+		"\\" { return symbol(sym.DIVIDE, "\\", yytext()); }
 		
 		/* Punctuation */
-		{Colon} { return symbol(sym.COLON, ":"); }
-		{SemiColon} { return symbol(sym.SEMI, ";"); }
+		{Colon} { return symbol(sym.COLON, ":", yytext()); }
+		{SemiColon} { return symbol(sym.SEMI, ";", yytext()); }
 		
 		/* Parenthesis */
-		{OpenParenthesis} { return symbol(sym.OPENPARENTEHSIS, "("); }
-		{CloseParenthesis} { return symbol(sym.CLOSEPARENTHESIS, ")"); }
+		{OpenParenthesis} { return symbol(sym.OPENPARENTEHSIS, "(", yytext()); }
+		{CloseParenthesis} { return symbol(sym.CLOSEPARENTHESIS, ")", yytext()); }
 		
 		/* comments */
 		{Comment} { /* ignore */ }

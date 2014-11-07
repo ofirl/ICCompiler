@@ -365,7 +365,7 @@ public class Lexer implements java_cup.runtime.Scanner {
 	private Token symbol(int type, String tag) {
 		return new Token(type, tag, yyline, yycolumn);
 	}
-	private Token symbol(int type, Object value, String tag) {
+	private Token symbol(int type, String tag, String value) {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
 
@@ -756,47 +756,47 @@ public class Lexer implements java_cup.runtime.Scanner {
           }
         case 15: break;
         case 3: 
-          { return symbol(sym.MULTIPLY, "*");
+          { return symbol(sym.MULTIPLY, "*", yytext());
           }
         case 16: break;
         case 4: 
-          { return symbol(sym.ID, "ID");
+          { return symbol(sym.ID, "ID", yytext());
           }
         case 17: break;
         case 5: 
-          { return symbol(sym.NUM, "INTEGER");
+          { return symbol(sym.NUM, "INTEGER", yytext());
           }
         case 18: break;
         case 6: 
-          { return symbol(sym.OPENPARENTEHSIS, "(");
+          { return symbol(sym.OPENPARENTEHSIS, "(", yytext());
           }
         case 19: break;
         case 7: 
-          { return symbol(sym.CLOSEPARENTHESIS, ")");
+          { return symbol(sym.CLOSEPARENTHESIS, ")", yytext());
           }
         case 20: break;
         case 8: 
-          { return symbol(sym.COLON, ":");
+          { return symbol(sym.COLON, ":", yytext());
           }
         case 21: break;
         case 9: 
-          { return symbol(sym.SEMI, ";");
+          { return symbol(sym.SEMI, ";", yytext());
           }
         case 22: break;
         case 10: 
-          { return symbol(sym.PLUS, "+");
+          { return symbol(sym.PLUS, "+", yytext());
           }
         case 23: break;
         case 11: 
-          { return symbol(sym.MINUS, "-");
+          { return symbol(sym.MINUS, "-", yytext());
           }
         case 24: break;
         case 12: 
-          { return symbol(sym.DIVIDE, "\\");
+          { return symbol(sym.DIVIDE, "\\", yytext());
           }
         case 25: break;
         case 13: 
-          { return symbol(sym.EQ, "=");
+          { return symbol(sym.EQ, "=", yytext());
           }
         case 26: break;
         default: 

@@ -14,7 +14,7 @@ public class Main {
 	        //Lexer will be the class name when we compile our lexer
 	        do {
 	            currToken = scanner.next_token();
-	            PrintToken("" + currToken.getId(), currToken.getTag(), currToken.getLine(), currToken.getColumn());
+	            PrintToken("" + currToken.getValue(), currToken.getTag(), currToken.getLine(), currToken.getColumn());
 	            
 	        } while (currToken.sym != sym.EOF);
 	    
