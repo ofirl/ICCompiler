@@ -39,10 +39,11 @@ import java_cup.runtime.*;
 	
 %%
 	
-	/* keywords */
-	<YYINITIAL> "abstract" { return symbol(sym.ABSTRACT); }
-	<YYINITIAL> "boolean" { return symbol(sym.BOOLEAN); }
-	<YYINITIAL> "break" { return symbol(sym.BREAK); }
+	/* keywords */ /** unnecessary for our purposes 
+	* <YYINITIAL> "abstract" { return symbol(sym.ABSTRACT); }
+	* <YYINITIAL> "boolean" { return symbol(sym.BOOLEAN); }
+	* <YYINITIAL> "break" { return symbol(sym.BREAK); } 
+	*/
 	
 	<YYINITIAL> {
 		/* identifiers */
@@ -50,12 +51,14 @@ import java_cup.runtime.*;
 		
 		/* literals */
 		{DecIntegerLiteral} { return symbol(sym.INTEGER_LITERAL); }
-		\" { string.setLength(0); yybegin(STRING); }
+		/* \" { string.setLength(0); yybegin(STRING); } */
 		
 		/* operators */
-		"=" { return symbol(sym.EQ); }
-		"==" { return symbol(sym.EQEQ); }
+		":=" { return symbol(sym.EQ); }
 		"+" { return symbol(sym.PLUS); }
+		"-" { return symbol(sym.MINUS); }
+		"*" { return symbol(sym.MULTIPLY); }
+		"\\" { return symbol(sym.DIVIDE); }
 		
 		/* comments */
 		{Comment} { /* ignore */ }
@@ -63,18 +66,19 @@ import java_cup.runtime.*;
 		/* whitespace */
 		{WhiteSpace} { /* ignore */ }
 	}
-	
-	<STRING> {
-		\" { yybegin(YYINITIAL);
-			return symbol(sym.STRING_LITERAL,
-			string.toString()); }
-		[^\n\r\"\\]+ { string.append( yytext() ); }
-		\\t { string.append('\t'); }
-		\\n { string.append('\n'); }
-		\\r { string.append('\r'); }
-		\\\" { string.append('\"'); }
-		\\ { string.append('\\'); }
-	}
+	/** unnecessary for out purposes */
+	*<STRING> {
+	*	\" { yybegin(YYINITIAL);
+	*		return symbol(sym.STRING_LITERAL,
+	*		string.toString()); }
+	*	[^\n\r\"\\]+ { string.append( yytext() ); }
+	*	\\t { string.append('\t'); }
+	*	\\n { string.append('\n'); }
+	*	\\r { string.append('\r'); }
+	*	\\\" { string.append('\"'); }
+	*	\\ { string.append('\\'); }
+	*}
+	*/
 	
 	/* error fallback */
 	[^] { throw new Error("Illegal character <"+
