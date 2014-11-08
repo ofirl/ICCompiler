@@ -11,6 +11,6 @@ public class sym {
 	public static final int OPENPARENTEHSIS = 6;
 	public static final int CLOSEPARENTHESIS = 7;
 	public static final int EQ = 8;
-	public static final int COLON = 8;
-	public static final int SEMI = 8;
+	public static final int COLON = 9;
+	public static final int SEMI = 10;
 }
