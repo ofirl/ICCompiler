@@ -42,7 +42,8 @@ import iCCompiler.*;
 	EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
 	DocumentationComment = "/**" {CommentContent} "*"+ "/"
 	CommentContent = ( [^*] | \*+ [^/*] )*
-	Identifier = [:jletter:] [:jletterdigit:]*
+	Identifier = [a-z] ([:jletterdigit:] | [_])*
+	ClassIdentifier = [A-Z] ([:jletterdigit:] | [_])*
 	DecIntegerLiteral = 0 | [1-9][0-9]*
 	
 	/* Parenthesis */
@@ -58,7 +59,6 @@ import iCCompiler.*;
 	
 	/* keywords */
 	<YYINITIAL> {
-	
 		"class" { return symbol(sym.CLASS, "class", yytext()); }
 		"extends" { return symbol(sym.EXTENDS, "extends", yytext()); }
 		"static" { return symbol(sym.STATIC, "static", yytext()); }
@@ -87,6 +87,9 @@ import iCCompiler.*;
 	<YYINITIAL> {
 		/* identifiers */
 		{Identifier} { return symbol(sym.ID, "ID", yytext()); }
+		
+		/* ClassIdentifier */
+		{ClassIdentifier} { return symbol(sym.CLASS_ID, "CLASS_ID", yytext()); }
 		
 		/* literals */
 		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER", yytext()); }

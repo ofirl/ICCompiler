@@ -32,4 +32,5 @@ public class sym {
 	public static final int TRUE = 28;
 	public static final int FALSE = 29;
 	public static final int NULL = 30;
+	public static final int CLASS_ID = 31;
 }
