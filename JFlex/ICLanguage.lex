@@ -43,7 +43,7 @@ import iCCompiler.*;
 	DocumentationComment = "/**" {CommentContent} "*"+ "/"
 	CommentContent = ( [^*] | \*+ [^/*] )*
 	ClassIdentifier = [:uppercase:] [:jletterdigit:]*
-	Identifier = [:jletter:] [:jletterdigit:]*
+	Identifier =  [:jletter:] [:jletterdigit: | "_"]*
 	DecIntegerLiteral = 0 | [1-9][0-9]*
 	
 	/* Punctuation */
