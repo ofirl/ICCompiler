@@ -56,11 +56,33 @@ import iCCompiler.*;
 	
 %%
 	
-	/* keywords */ /** unnecessary for our purposes 
-	* <YYINITIAL> "abstract" { return symbol(sym.ABSTRACT); }
-	* <YYINITIAL> "boolean" { return symbol(sym.BOOLEAN); }
-	* <YYINITIAL> "break" { return symbol(sym.BREAK); } 
-	*/
+	/* keywords */
+	<YYINITIAL> {
+	
+		"class" { return symbol(sym.CLASS, "class", yytext()); }
+		"extends" { return symbol(sym.EXTENDS, "extends", yytext()); }
+		"static" { return symbol(sym.STATIC, "static", yytext()); }
+		"void" { return symbol(sym.VOID, "void", yytext()); }
+	
+		"int" { return symbol(sym.INT, "int", yytext()); }
+		"boolean" { return symbol(sym.BOOLEAN, "boolean", yytext()); }
+		"string" { return symbol(sym.STRING, "string", yytext()); }
+		"return" { return symbol(sym.RETURN, "return", yytext()); }
+	
+		"if" { return symbol(sym.IF, "if", yytext()); }
+		"else" { return symbol(sym.ELSE, "else", yytext()); }
+		"while" { return symbol(sym.WHILE, "while", yytext()); }
+		"break" { return symbol(sym.BREAK, "break", yytext()); }
+		
+		"continue" { return symbol(sym.CONTINUE, "continue", yytext()); }
+		"this" { return symbol(sym.THIS, "this", yytext()); }
+		"new" { return symbol(sym.NEW, "new", yytext()); }
+		"length" { return symbol(sym.LENGTH, "length", yytext()); }
+		
+		"true" { return symbol(sym.TRUE, "true", yytext()); }
+		"false" { return symbol(sym.FALSE, "false", yytext()); }
+		"null" { return symbol(sym.NULL, "null", yytext()); }
+	}
 	
 	<YYINITIAL> {
 		/* identifiers */
@@ -71,7 +93,7 @@ import iCCompiler.*;
 		/* \" { string.setLength(0); yybegin(STRING); } */
 		
 		/* operators */
-		":=" { return symbol(sym.EQ, "=", yytext()); }
+		"=" { return symbol(sym.EQ, "=", yytext()); }
 		"+" { return symbol(sym.PLUS, "+", yytext()); }
 		"-" { return symbol(sym.MINUS, "-", yytext()); }
 		"*" { return symbol(sym.MULTIPLY, "*", yytext()); }
