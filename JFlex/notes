@@ -14,4 +14,5 @@ it will throw an error in the EOF function, switch the "return new Symbol(...);"
 "return new Token(sym.EOF, "EOF", 0 , 0);"
 
 To Do list :
-2. check what other tags are needed.
+1. check what other tags are needed.
+2. fix error handling
