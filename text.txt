@@ -1,2 +1,23 @@
-+ -
- *
+variable
+56
++ - * \ ! % > >= < <= == && ||
+( ) [ ] , ;
+Classtest
+extends
+static
+void
+int
+boolean
+"string test"
+return
+if
+else
+while
+break
+continue
+this
+new
+length
+true
+false
+null
