@@ -13,16 +13,16 @@ public class Token extends Symbol {
 	public Token(int sym_num, String tag, int line, int column) {
 		super(sym_num);
 		id = sym_num;
-		this.line = line;
-		this.column = column;
+		this.line = line + 1;
+		this.column = column + 1;
 		this.tag = tag;
 	}
 	
 	public Token(int sym_num, String tag, int line, int column, String value) {
 		super(sym_num);
 		id = sym_num;
-		this.line = line;
-		this.column = column;
+		this.line = line + 1;
+		this.column = column + 1;
 		this.value = value;
 		this.tag = tag;
 	}

@@ -803,7 +803,8 @@ public class Lexer implements java_cup.runtime.Scanner {
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;
             zzDoEOF();
-              { return new Token(sym.EOF, "EOF", 0 , 0); }
+              {   	return new Token(sym.EOF, "EOF", 0 , 0);
+ }
           } 
           else {
             zzScanError(ZZ_NO_MATCH);

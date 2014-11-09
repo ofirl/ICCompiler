@@ -16,6 +16,10 @@ import iCCompiler.*;
 %line
 %column
 %public
+
+%eofval{
+  	return new Token(sym.EOF, "EOF", 0 , 0);
+%eofval}
 	
 %{
 	StringBuffer string = new StringBuffer();
