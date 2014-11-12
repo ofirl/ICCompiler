@@ -755,7 +755,7 @@ public class Lexer implements java_cup.runtime.Scanner {
    *
    * @param   errorCode  the code of the errormessage to display
    */
-  private void zzScanError(int errorCode) {
+  private void zzScanError(int errorCode) throws LexicalError {
     String message;
     try {
       message = ZZ_ERROR_MSG[errorCode];
@@ -764,7 +764,7 @@ public class Lexer implements java_cup.runtime.Scanner {
       message = ZZ_ERROR_MSG[ZZ_UNKNOWN_ERROR];
     }
 
-    throw new Error(message);
+    throw new LexicalError(message);
   } 
 
 
@@ -776,7 +776,7 @@ public class Lexer implements java_cup.runtime.Scanner {
    * @param number  the number of characters to be read again.
    *                This number must not be greater than yylength()!
    */
-  public void yypushback(int number)  {
+  public void yypushback(int number)  throws LexicalError {
     if ( number > yylength() )
       zzScanError(ZZ_PUSHBACK_2BIG);
 
@@ -803,7 +803,7 @@ public class Lexer implements java_cup.runtime.Scanner {
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  public Token next_token() throws java.io.IOException {
+  public Token next_token() throws java.io.IOException, LexicalError {
     int zzInput;
     int zzAction;
 
@@ -939,7 +939,7 @@ public class Lexer implements java_cup.runtime.Scanner {
 
       switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
         case 1: 
-          { throw new Error("Illegal character <"+
+          { throw new LexicalError("Illegal character <"+
 		yytext()+">");
           }
         case 52: break;

@@ -16,6 +16,7 @@ import iCCompiler.*;
 %line
 %column
 %public
+%scanerror LexicalError
 
 %eofval{
   	return new Token(sym.EOF, "EOF", 0 , 0, "EOF");
@@ -135,5 +136,5 @@ import iCCompiler.*;
 	}
 	
 	/* error fallback */
-	[^] { throw new Error("Illegal character <"+
+	[^] { throw new LexicalError("Illegal character <"+
 		yytext()+">"); }
