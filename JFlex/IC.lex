@@ -51,7 +51,10 @@ import iCCompiler.*;
 	Colon = :
 	SemiColon = ;
 	Comma = \,
-%state STRING
+	
+	String = \" ( [^\"\\] | "\\\\" | "\\\"" | "\\n" | "\\t" )* \"
+	
+//  %state STRING
 	
 %%
 	
@@ -81,13 +84,16 @@ import iCCompiler.*;
 		"false" { return symbol(sym.FALSE, "FALSE", yytext()); }
 		"null" { return symbol(sym.NULL, "NULL", yytext()); }
 	
+		/* Strings */
+		{String} { return symbol(sym.STRING, "STRING", yytext()); }
+		
 		/* identifiers */
 		{ClassIdentifier} { return symbol(sym.CLASSID, "CLASSID", yytext()); }
 		{Identifier} { return symbol(sym.ID, "ID", yytext()); }
 		
 		/* literals */
 		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER", yytext()); }
-		\" { string.setLength(0); yybegin(STRING); }
+//		\" { string.setLength(0); yybegin(STRING); }
 		
 		/* operators */
 		"=" { return symbol(sym.EQ, "=", yytext()); }
@@ -123,17 +129,17 @@ import iCCompiler.*;
 		{WhiteSpace} { /* ignore */ }
 	}
 	
-	<STRING> {
-		\" { yybegin(YYINITIAL);
-			return symbol(sym.STRING, "STRING", 
-			string.toString()); }
-		[^\n\r\"\\]+ { string.append( yytext() ); }
-		\\t { string.append('\t'); }
-		\\n { string.append('\n'); }
-		\\r { string.append('\r'); }
-		\\\" { string.append('\"'); }
-		\\ { string.append('\\'); }
-	}
+//	<STRING> {
+//		\" { yybegin(YYINITIAL);
+//			return symbol(sym.STRING, "STRING", 
+//			string.toString()); }
+//		[^\n\r\"\\]+ { string.append( yytext() ); }
+//		\\t { string.append('\t'); }
+//		\\n { string.append('\n'); }
+//		\\r { string.append('\r'); }
+//		\\\" { string.append('\"'); }
+//		\\ { string.append('\\'); }
+//	}
 	
 	/* error fallback */
 	[^] { throw new LexicalError("Illegal character <"+
