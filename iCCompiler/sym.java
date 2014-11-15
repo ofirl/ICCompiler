@@ -31,7 +31,7 @@ public class sym {
 	public static final int CLOSEROUNDPARENTHESIS = 18;
 	public static final int OPENSQUAREPARENTEHSIS = 19;
 	public static final int CLOSESQUAREPARENTHESIS = 20;
-	public static final int COLON = 21;
+//	public static final int COLON = 21;
 	public static final int SEMI = 22;
 	public static final int COMMA = 42;
 	public static final int OPENCURLYPARENTEHSIS = 170;

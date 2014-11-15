@@ -30,6 +30,10 @@ import iCCompiler.*;
 	private Token symbol(int type, String tag, String value) {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
+	
+	private void lexError(String msg) throws LexicalError {
+		throw new LexicalError((yyline+1) + ":" + (yycolumn+1) + " : lexical error; " + msg);
+	}
 %}
 	
 	LineTerminator = \r|\n|\r\n
@@ -43,21 +47,23 @@ import iCCompiler.*;
 	EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
 	DocumentationComment = "/**" {CommentContent} "*"+ "/"
 	CommentContent = ( [^*] | \*+ [^/*] )*
-	UnclosedComment = "/*" [^"*/"]*
+	UnterminatedComment = "/*" [^"*/"]*
 	
 	AlphaNumeric = [a-zA-Z0-9]
 	ClassIdentifier = [A-Z] ({AlphaNumeric} | "_")*
 	Identifier = [a-z] ({AlphaNumeric} | "_")*
+	NotIdentifier = "_" ({AlphaNumeric} | "_")
 	DecIntegerLiteral = 0 | [1-9][0-9]*
 	
 	/* Punctuation */
-	Colon = :
+//	Colon = :
 	SemiColon = ;
 	Comma = \,
 	
 	StringASCIICharacters = [ !#-\[\]-~]
 	StringEscapeSequences = "\\\\" | "\\\"" | "\\n" | "\\t"
 	String = \" ( {StringASCIICharacters} | {StringEscapeSequences} )* \"
+	NotString = \" ([^\"] | {StringEscapeSequences} )*
 	
 //  %state STRING
 	
@@ -121,7 +127,7 @@ import iCCompiler.*;
 		"." { return symbol(sym.DOT, ".", yytext()); }
 		
 		/* Punctuation */
-		{Colon} { return symbol(sym.COLON, ":", yytext()); }
+//		{Colon} { return symbol(sym.COLON, ":", yytext()); }
 		{SemiColon} { return symbol(sym.SEMI, ";", yytext()); }
 		{Comma} { return symbol(sym.COMMA, ",", yytext()); }
 		
@@ -153,7 +159,11 @@ import iCCompiler.*;
 //	}
 	
 	/* error fallback */
-	{ UnclosedComment } { throw new LexicalError("Unclosed Comment"); }
+	{NotIdentifier} { lexError("an identifier cannot start with '_'"); }
 	
-	[^] { throw new LexicalError("Illegal character <"+
-		yytext()+">"); }
+	{NotString} { lexError("malformed string literal"); }
+	
+	{UnterminatedComment} { lexError("unterminated comment"); }
+	
+	[^] { lexError("invalid character '"+ yytext()+"'"); }
+	

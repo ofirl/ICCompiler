@@ -17,5 +17,4 @@ To Do list :
 1. check what other tags are needed.
 2. fix error handling
 3. Handle EOF (should it be printed ?).
-4. Get rid of DocumentationComment ?
-5. Get rid of Colon ?
+4. Get rid of Colon ?
