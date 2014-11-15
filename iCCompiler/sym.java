@@ -1,11 +1,13 @@
 package iCCompiler;
 
 public class sym {
-	//general
+	// general
 	public static final int EOF = 0;
 	public static final int ID = 1;
 	public static final int NUM = 2;
-	
+	public static final int CLASS_ID = 23;
+	public static final int STR = 43; // an actual string like "Nice"
+
 	// operators
 	public static final int PLUS = 3;
 	public static final int MINUS = 4;
@@ -21,7 +23,9 @@ public class sym {
 	public static final int EQCOMP = 14;
 	public static final int AND = 15;
 	public static final int OR = 16;
-	
+	public static final int DOT = 160;
+	public static final int NOTEQCOMP = 161;
+
 	// punctuation
 	public static final int OPENROUNDPARENTEHSIS = 17;
 	public static final int CLOSEROUNDPARENTHESIS = 18;
@@ -30,17 +34,19 @@ public class sym {
 	public static final int COLON = 21;
 	public static final int SEMI = 22;
 	public static final int COMMA = 42;
-	
-	//saved keywords : class extends static void int boolean string
-	//return if else while break continue this
-	//new length true false null
-	public static final int CLASSID = 23;
+	public static final int OPENCURLYPARENTEHSIS = 170;
+	public static final int CLOSECURLYPARENTHESIS = 171;
+
+	// saved keywords : class extends static void int boolean string
+	// return if else while break continue this
+	// new length true false null
+	public static final int CLASS = 44;
 	public static final int EXTENDS = 24;
 	public static final int STATIC = 25;
 	public static final int VOID = 26;
 	public static final int INT = 27;
 	public static final int BOOLEAN = 28;
-	public static final int STRING = 29;
+	public static final int STRING = 29; // the keyword string
 	public static final int RETURN = 30;
 	public static final int IF = 31;
 	public static final int ELSE = 32;

@@ -19,7 +19,7 @@ import iCCompiler.*;
 %scanerror LexicalError
 
 %eofval{
-  	return new Token(sym.EOF, "EOF", 0 , 0, "EOF");
+  	return symbol(sym.EOF, "EOF", "EOF");
 %eofval}
 	
 %{
@@ -43,8 +43,11 @@ import iCCompiler.*;
 	EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
 	DocumentationComment = "/**" {CommentContent} "*"+ "/"
 	CommentContent = ( [^*] | \*+ [^/*] )*
-	ClassIdentifier = [:uppercase:] [:jletterdigit:]*
-	Identifier =  [:jletter:] ([:jletterdigit:] | "_")*
+	UnclosedComment = "/*" [^"*/"]*
+	
+	AlphaNumeric = [a-zA-Z0-9]
+	ClassIdentifier = [A-Z] ({AlphaNumeric} | "_")*
+	Identifier = [a-z] ({AlphaNumeric} | "_")*
 	DecIntegerLiteral = 0 | [1-9][0-9]*
 	
 	/* Punctuation */
@@ -52,7 +55,9 @@ import iCCompiler.*;
 	SemiColon = ;
 	Comma = \,
 	
-	String = \" ( [^\"\\] | "\\\\" | "\\\"" | "\\n" | "\\t" )* \"
+	StringASCIICharacters = [ !#-\[\]-~]
+	StringEscapeSequences = "\\\\" | "\\\"" | "\\n" | "\\t"
+	String = \" ( {StringASCIICharacters} | {StringEscapeSequences} )* \"
 	
 //  %state STRING
 	
@@ -66,29 +71,31 @@ import iCCompiler.*;
 	
 	<YYINITIAL> {
 		/* keywords */
-		"extends" { return symbol(sym.EXTENDS, "EXTENDS", yytext()); }
-		"static" { return symbol(sym.STATIC, "STATIC", yytext()); }
-		"void" { return symbol(sym.VOID, "VOID", yytext()); }
-		"int" { return symbol(sym.INT, "INT", yytext()); }
-		"boolean" { return symbol(sym.BOOLEAN, "BOOLEAN", yytext()); }
-		"return" { return symbol(sym.RETURN, "RETURN", yytext()); }
-		"if" { return symbol(sym.IF, "IF", yytext()); }
-		"else" { return symbol(sym.ELSE, "ELSE", yytext()); }
-		"while" { return symbol(sym.WHILE, "WHILE", yytext()); }
-		"break" { return symbol(sym.BREAK, "BREAK", yytext()); }
-		"continue" { return symbol(sym.CONTINUE, "CONTINUE", yytext()); }
-		"this" { return symbol(sym.THIS, "THIS", yytext()); }
-		"new" { return symbol(sym.NEW, "NEW", yytext()); }
-		"length" { return symbol(sym.LENGTH, "LENGTH", yytext()); }
-		"true" { return symbol(sym.TRUE, "TRUE", yytext()); }
-		"false" { return symbol(sym.FALSE, "FALSE", yytext()); }
-		"null" { return symbol(sym.NULL, "NULL", yytext()); }
+		"class" { return symbol(sym.CLASS, "class", yytext()); }
+		"extends" { return symbol(sym.EXTENDS, "extends", yytext()); }
+		"static" { return symbol(sym.STATIC, "static", yytext()); }
+		"void" { return symbol(sym.VOID, "void", yytext()); }
+		"int" { return symbol(sym.INT, "int", yytext()); }
+		"boolean" { return symbol(sym.BOOLEAN, "boolean", yytext()); }
+		"string" { return symbol(sym.STRING, "string", yytext()); }
+		"return" { return symbol(sym.RETURN, "return", yytext()); }
+		"if" { return symbol(sym.IF, "if", yytext()); }
+		"else" { return symbol(sym.ELSE, "else", yytext()); }
+		"while" { return symbol(sym.WHILE, "while", yytext()); }
+		"break" { return symbol(sym.BREAK, "break", yytext()); }
+		"continue" { return symbol(sym.CONTINUE, "continue", yytext()); }
+		"this" { return symbol(sym.THIS, "this", yytext()); }
+		"new" { return symbol(sym.NEW, "new", yytext()); }
+		"length" { return symbol(sym.LENGTH, "length", yytext()); }
+		"true" { return symbol(sym.TRUE, "true", yytext()); }
+		"false" { return symbol(sym.FALSE, "false", yytext()); }
+		"null" { return symbol(sym.NULL, "null", yytext()); }
 	
 		/* Strings */
-		{String} { return symbol(sym.STRING, "STRING", yytext()); }
+		{String} { return symbol(sym.STR, "STRING", yytext()); }
 		
 		/* identifiers */
-		{ClassIdentifier} { return symbol(sym.CLASSID, "CLASSID", yytext()); }
+		{ClassIdentifier} { return symbol(sym.CLASS_ID, "CLASS_ID", yytext()); }
 		{Identifier} { return symbol(sym.ID, "ID", yytext()); }
 		
 		/* literals */
@@ -98,10 +105,11 @@ import iCCompiler.*;
 		/* operators */
 		"=" { return symbol(sym.EQ, "=", yytext()); }
 		"==" { return symbol(sym.EQCOMP, "==", yytext()); }
+		"!=" { return symbol(sym.NOTEQCOMP, "!=", yytext()); }
 		"+" { return symbol(sym.PLUS, "+", yytext()); }
 		"-" { return symbol(sym.MINUS, "-", yytext()); }
 		"*" { return symbol(sym.MULTIPLY, "*", yytext()); }
-		"\\" { return symbol(sym.DIVIDE, "\\", yytext()); }
+		"/" { return symbol(sym.DIVIDE, "/", yytext()); }
 		"%" { return symbol(sym.REMINDER, "%", yytext()); }
 		\! { return symbol(sym.NEGATION, "!", yytext()); }
 		">" { return symbol(sym.BIG, ">", yytext()); }
@@ -110,6 +118,7 @@ import iCCompiler.*;
 		"<=" { return symbol(sym.SMALLEQ, "<=", yytext()); }
 		"&&" { return symbol(sym.AND, "&&", yytext()); }
 		"||" { return symbol(sym.OR, "||", yytext()); }
+		"." { return symbol(sym.DOT, ".", yytext()); }
 		
 		/* Punctuation */
 		{Colon} { return symbol(sym.COLON, ":", yytext()); }
@@ -121,6 +130,8 @@ import iCCompiler.*;
 		\) { return symbol(sym.CLOSEROUNDPARENTHESIS, ")", yytext()); }
 		"[" { return symbol(sym.OPENSQUAREPARENTEHSIS, "[", yytext()); }
 		"]" { return symbol(sym.CLOSESQUAREPARENTHESIS, "]", yytext()); }
+		"{" { return symbol(sym.OPENCURLYPARENTEHSIS, "{", yytext()); }
+		"}" { return symbol(sym.CLOSECURLYPARENTHESIS, "}", yytext()); }
 		
 		/* comments */
 		{Comment} { /* ignore */ }
@@ -142,5 +153,7 @@ import iCCompiler.*;
 //	}
 	
 	/* error fallback */
+	{ UnclosedComment } { throw new LexicalError("Unclosed Comment"); }
+	
 	[^] { throw new LexicalError("Illegal character <"+
 		yytext()+">"); }
