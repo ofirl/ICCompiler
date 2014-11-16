@@ -330,8 +330,8 @@ public class Lexer implements java_cup.runtime.Scanner {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
 	
-	private void lexError(String msg) throws LexicalError {
-		throw new LexicalError((yyline+1) + ":" + (yycolumn+1) + " : lexical error; " + msg);
+	private void lexError(String message) throws LexicalError {
+		throw new LexicalError(message, yyline+1, yycolumn+1);
 	}
 
 

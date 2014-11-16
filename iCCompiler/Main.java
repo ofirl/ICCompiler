@@ -3,44 +3,47 @@ package iCCompiler;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import JFlex.*;
 
 public class Main {
-	
 	public static void main(String[] args) {
-	    
-		Collection<Token> tokens = LexFile(args[0]);
-		
-		for (Token currToken : tokens){
-			PrintToken(currToken.getValue(), currToken.getTag(), currToken.getLine(), currToken.getColumn());
+		Collection<Token> tokens = null;
+		try {
+			tokens = LexFile(args[0]);
+		} catch (LexicalError e) {
+			PrintTokenError(e.getMessage(), e.getLine(), e.getColumn());
+		} catch (Exception e) {
+			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
 		}
-	  }
+	}
 
-	public static Collection<Token> LexFile(String file)
-	{
+	public static Collection<Token> LexFile(String file) throws LexicalError,
+			Exception {
 		Collection<Token> tokens = new ArrayList<>();
-		
 		Token currToken;
-	    try {
-	        FileReader txtFile = new FileReader(file);
-	        Lexer scanner = new Lexer(txtFile); 
-	        System.out.println("token\ttag\tline : column");
-	        
-	        do {
-	            currToken = scanner.next_token();
-	            tokens.add(currToken);	            
-	        } while (currToken.sym != sym.EOF);
-	    
-	    } catch (Exception e) {
-	        throw new RuntimeException("IO Error (brutal exit)" + e.toString());
-	    }
-		
+		FileReader txtFile = new FileReader(file);
+		Lexer scanner = new Lexer(txtFile);
+
+		PrintHeader();
+		do {
+			currToken = scanner.next_token();
+			tokens.add(currToken);
+			PrintToken(currToken.getValue(), currToken.getTag(),
+					currToken.getLine(), currToken.getColumn());
+		} while (currToken.sym != sym.EOF);
 		return tokens;
 	}
-	
-	/* This function was given in the exercise. */
-	public static void PrintToken(String token,String tag , int line , int column) {
-		System.out. println (token+"\t"+tag+"\t"+line+":"+column);
+
+	public static void PrintHeader() {
+		System.out.println("token\ttag\tline :column");
+	}
+
+	public static void PrintToken(String token, String tag, int line, int column) {
+		System.out.println(token + "\t" + tag + "\t" + line + ":" + column);
+	}
+
+	public static void PrintTokenError(String token, int line, int column) {
+		System.err.println("Error!\t" + token + "\t" + "\t" + line + ":"
+				+ column);
 	}
 }

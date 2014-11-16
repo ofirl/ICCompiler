@@ -31,8 +31,8 @@ import iCCompiler.*;
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
 	
-	private void lexError(String msg) throws LexicalError {
-		throw new LexicalError((yyline+1) + ":" + (yycolumn+1) + " : lexical error; " + msg);
+	private void lexError(String message) throws LexicalError {
+		throw new LexicalError(message, yyline+1, yycolumn+1);
 	}
 %}
 	
@@ -160,10 +160,8 @@ import iCCompiler.*;
 	
 	/* error fallback */
 	{NotIdentifier} { lexError("an identifier cannot start with '_'"); }
-	
 	{NotString} { lexError("malformed string literal"); }
-	
 	{UnterminatedComment} { lexError("unterminated comment"); }
-	
 	[^] { lexError("invalid character '"+ yytext()+"'"); }
+	
 	
