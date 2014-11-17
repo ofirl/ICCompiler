@@ -23,10 +23,6 @@ import iCCompiler.*;
 %eofval}
 	
 %{
-	StringBuffer string = new StringBuffer();
-	private Token symbol(int type, String tag) {
-		return new Token(type, tag, yyline, yycolumn);
-	}
 	private Token symbol(int type, String tag, String value) {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
@@ -56,7 +52,6 @@ import iCCompiler.*;
 	DecIntegerLiteral = 0 | [1-9][0-9]*
 	
 	/* Punctuation */
-//	Colon = :
 	SemiColon = ;
 	Comma = \,
 	
@@ -65,15 +60,7 @@ import iCCompiler.*;
 	String = \" ( {StringASCIICharacters} | {StringEscapeSequences} )* \"
 	NotString = \" ([^\"] | {StringEscapeSequences} )*
 	
-//  %state STRING
-	
 %%
-	
-	/* keywords */ /**
-	*<YYINITIAL> "abstract" { return symbol(sym.ABSTRACT); }
-	*<YYINITIAL> "boolean" { return symbol(sym.BOOLEAN); }
-	*<YYINITIAL> "break" { return symbol(sym.BREAK); } 
-	*/
 	
 	<YYINITIAL> {
 		/* keywords */
@@ -106,7 +93,6 @@ import iCCompiler.*;
 		
 		/* literals */
 		{DecIntegerLiteral} { return symbol(sym.NUM, "INTEGER", yytext()); }
-//		\" { string.setLength(0); yybegin(STRING); }
 		
 		/* operators */
 		"=" { return symbol(sym.EQ, "=", yytext()); }
@@ -127,7 +113,6 @@ import iCCompiler.*;
 		"." { return symbol(sym.DOT, ".", yytext()); }
 		
 		/* Punctuation */
-//		{Colon} { return symbol(sym.COLON, ":", yytext()); }
 		{SemiColon} { return symbol(sym.SEMI, ";", yytext()); }
 		{Comma} { return symbol(sym.COMMA, ",", yytext()); }
 		
@@ -145,18 +130,6 @@ import iCCompiler.*;
 		/* whitespace */
 		{WhiteSpace} { /* ignore */ }
 	}
-	
-//	<STRING> {
-//		\" { yybegin(YYINITIAL);
-//			return symbol(sym.STRING, "STRING", 
-//			string.toString()); }
-//		[^\n\r\"\\]+ { string.append( yytext() ); }
-//		\\t { string.append('\t'); }
-//		\\n { string.append('\n'); }
-//		\\r { string.append('\r'); }
-//		\\\" { string.append('\"'); }
-//		\\ { string.append('\\'); }
-//	}
 	
 	/* error fallback */
 	{NotIdentifier} { lexError("an identifier cannot start with '_'"); }

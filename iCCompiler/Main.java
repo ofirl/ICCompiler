@@ -6,8 +6,10 @@ import java.util.Collection;
 import JFlex.*;
 
 public class Main {
+
 	public static void main(String[] args) {
 		Collection<Token> tokens = null;
+		
 		try {
 			tokens = LexFile(args[0]);
 		} catch (LexicalError e) {
@@ -28,9 +30,12 @@ public class Main {
 		do {
 			currToken = scanner.next_token();
 			tokens.add(currToken);
-			PrintToken(currToken.getValue(), currToken.getTag(),
-					currToken.getLine(), currToken.getColumn());
+			if (currToken.sym != sym.EOF) // print token details only if it's
+											// not EOF
+				PrintToken(currToken.getValue(), currToken.getTag(),
+						currToken.getLine(), currToken.getColumn());
 		} while (currToken.sym != sym.EOF);
+
 		return tokens;
 	}
 

@@ -322,10 +322,6 @@ public class Lexer implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-	StringBuffer string = new StringBuffer();
-	private Token symbol(int type, String tag) {
-		return new Token(type, tag, yyline, yycolumn);
-	}
 	private Token symbol(int type, String tag, String value) {
 		return new Token(type, tag, yyline, yycolumn, value);
 	}
