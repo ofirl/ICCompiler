@@ -7,7 +7,7 @@ public class Token extends Symbol {
 	private int tag;
 	private int line;
 	private int column;
-	private String tagStr;
+	private String tagStr; // used for printing the tag as a String
 	private String value;
 
 	public Token(int sym_num, String tagStr, int line, int column) {

@@ -26,7 +26,7 @@ import iCCompiler.*;
 	private Token symbol(int tag, String tagString, String value) {
 		return new Token(tag, tagString, yyline, yycolumn, value);
 	}
-	
+
 	private void lexError(String message) throws LexicalError {
 		throw new LexicalError(message, yyline+1, yycolumn+1);
 	}
@@ -135,6 +135,6 @@ import iCCompiler.*;
 	{NotIdentifier} { lexError("Lexical error: " + yytext()); }
 	{NotString} { lexError("Lexical error: " + yytext()); }
 	{UnterminatedComment} { lexError("Lexical error: " + yytext()); }
-	[^] { lexError("Lexical error: " + yytext()); } // invalid character
+	[^] { lexError("Lexical error: " + yytext()); }  // invalid character
 	
 	

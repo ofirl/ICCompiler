@@ -1,4 +1,2 @@
-class Quicksort {
-    int[] a;
-
-    $
+"blah blah 
+"

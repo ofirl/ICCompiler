@@ -30,7 +30,7 @@ public class Main {
 		do {
 			currToken = scanner.next_token();
 			tokens.add(currToken);
-			// print token details only if it's not EOF
+			// print the details of the token only if it's not EOF
 			if (currToken.sym != sym.EOF)
 				PrintToken(currToken.getValue(), currToken.getTagString(),
 						currToken.getLine(), currToken.getColumn());
