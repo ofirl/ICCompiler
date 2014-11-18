@@ -9,11 +9,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		Collection<Token> tokens = null;
-		
+
 		try {
 			tokens = LexFile(args[0]);
 		} catch (LexicalError e) {
-			PrintTokenError(e.getMessage(), e.getLine(), e.getColumn());
+			PrintTokenError(e.getLine() + ": " + e.getMessage());
 		} catch (Exception e) {
 			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
 		}
@@ -30,9 +30,9 @@ public class Main {
 		do {
 			currToken = scanner.next_token();
 			tokens.add(currToken);
-			if (currToken.sym != sym.EOF) // print token details only if it's
-											// not EOF
-				PrintToken(currToken.getValue(), currToken.getTag(),
+			// print token details only if it's not EOF
+			if (currToken.sym != sym.EOF)
+				PrintToken(currToken.getValue(), currToken.getTagString(),
 						currToken.getLine(), currToken.getColumn());
 		} while (currToken.sym != sym.EOF);
 
@@ -47,8 +47,7 @@ public class Main {
 		System.out.println(token + "\t" + tag + "\t" + line + ":" + column);
 	}
 
-	public static void PrintTokenError(String token, int line, int column) {
-		System.err.println("Error!\t" + token + "\t" + "\t" + line + ":"
-				+ column);
+	public static void PrintTokenError(String errMsg) {
+		System.err.println("Error!\t" + errMsg);
 	}
 }

@@ -4,31 +4,31 @@ import java_cup.runtime.Symbol;
 
 public class Token extends Symbol {
 
-	private int id;
+	private int tag;
 	private int line;
 	private int column;
-	private String tag;
+	private String tagStr;
 	private String value;
 
-	public Token(int sym_num, String tag, int line, int column) {
+	public Token(int sym_num, String tagStr, int line, int column) {
 		super(sym_num);
-		id = sym_num;
+		tag = sym_num;
 		this.line = line + 1;
 		this.column = column + 1;
-		this.tag = tag;
+		this.tagStr = tagStr;
 	}
 	
-	public Token(int sym_num, String tag, int line, int column, String value) {
+	public Token(int sym_num, String tagStr, int line, int column, String value) {
 		super(sym_num);
-		id = sym_num;
+		tag = sym_num;
 		this.line = line + 1;
 		this.column = column + 1;
 		this.value = value;
-		this.tag = tag;
+		this.tagStr = tagStr;
 	}
 
-	public int getId() {
-		return id;
+	public int getTag() {
+		return tag;
 	}
 
 	public int getLine() {
@@ -39,8 +39,8 @@ public class Token extends Symbol {
 		return column;
 	}
 
-	public String getTag() {
-		return tag;
+	public String getTagString() {
+		return tagStr;
 	}
 
 	public String getValue() {

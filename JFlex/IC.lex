@@ -23,8 +23,8 @@ import iCCompiler.*;
 %eofval}
 	
 %{
-	private Token symbol(int type, String tag, String value) {
-		return new Token(type, tag, yyline, yycolumn, value);
+	private Token symbol(int tag, String tagString, String value) {
+		return new Token(tag, tagString, yyline, yycolumn, value);
 	}
 	
 	private void lexError(String message) throws LexicalError {
@@ -132,9 +132,9 @@ import iCCompiler.*;
 	}
 	
 	/* error fallback */
-	{NotIdentifier} { lexError("an identifier cannot start with '_'"); }
-	{NotString} { lexError("malformed string literal"); }
-	{UnterminatedComment} { lexError("unterminated comment"); }
-	[^] { lexError("invalid character '"+ yytext()+"'"); }
+	{NotIdentifier} { lexError("Lexical error: " + yytext()); }
+	{NotString} { lexError("Lexical error: " + yytext()); }
+	{UnterminatedComment} { lexError("Lexical error: " + yytext()); }
+	[^] { lexError("Lexical error: " + yytext()); } // invalid character
 	
 	
