@@ -1,14 +1,15 @@
 package iCCompiler;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import JFlex.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Collection<Token> tokens = null;
+		List<Token> tokens = new LinkedList <Token> ();
 
 		try {
 			tokens = LexFile(args[0]);
@@ -19,9 +20,9 @@ public class Main {
 		}
 	}
 
-	public static Collection<Token> LexFile(String file) throws LexicalError,
+	public static List<Token> LexFile(String file) throws LexicalError,
 			Exception {
-		Collection<Token> tokens = new ArrayList<>();
+		List<Token> tokens = new LinkedList <Token> ();
 		Token currToken;
 		FileReader txtFile = new FileReader(file);
 		Lexer scanner = new Lexer(txtFile);
