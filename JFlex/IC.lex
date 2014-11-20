@@ -50,6 +50,7 @@ import iCCompiler.*;
 	Identifier = [a-z] ({AlphaNumeric} | "_")*
 	NotIdentifier = "_" ({AlphaNumeric} | "_")
 	DecIntegerLiteral = 0 | [1-9][0-9]*
+	NotInteger = 0 [0-9]+
 	
 	/* Punctuation */
 	SemiColon = ;
@@ -102,7 +103,7 @@ import iCCompiler.*;
 		"-" { return symbol(sym.MINUS, "-", yytext()); }
 		"*" { return symbol(sym.MULTIPLY, "*", yytext()); }
 		"/" { return symbol(sym.DIVIDE, "/", yytext()); }
-		"%" { return symbol(sym.REMINDER, "%", yytext()); }
+		"%" { return symbol(sym.REMAINDER, "%", yytext()); }
 		\! { return symbol(sym.NEGATION, "!", yytext()); }
 		">" { return symbol(sym.BIG, ">", yytext()); }
 		">=" { return symbol(sym.BIGEQ, ">=", yytext()); }
@@ -135,6 +136,7 @@ import iCCompiler.*;
 	{NotIdentifier} { lexError("Lexical error: " + yytext()); }
 	{NotString} { lexError("Lexical error: " + yytext()); }
 	{UnterminatedComment} { lexError("Lexical error: " + yytext()); }
+	{ NotInteger } { lexError("Lexical error: " + yytext()); }
 	[^] { lexError("Lexical error: " + yytext()); }  // invalid character
 	
 	

@@ -14,7 +14,7 @@ public class sym {
 	public static final int MULTIPLY = 12;
 	public static final int DIVIDE = 13;
 	public static final int NEGATION = 14;
-	public static final int REMINDER = 15;
+	public static final int REMAINDER = 15;
 	public static final int BIG = 16;
 	public static final int BIGEQ = 17;
 	public static final int SMALL = 18;
