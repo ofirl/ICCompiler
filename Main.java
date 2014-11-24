@@ -1,8 +1,4 @@
-import iCLexer.Lexer;
-import iCLexer.LexicalError;
-import iCLexer.Token;
-import iCLexer.sym;
-
+import IC.Parser.*;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
