@@ -1,6 +1,6 @@
-package IC.Parser;
+package iCParser.Parser;
 
-import IC.AST.*;
+import iCParser.AST.*;
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)

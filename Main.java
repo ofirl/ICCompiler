@@ -16,9 +16,11 @@ public class Main {
 			tokens = LexFile(args[0]);
 		} catch (LexicalError e) {
 			PrintTokenError(e.getLine() + ": " + e.getMessage());
+			return;
 		} catch (Exception e) {
 			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
 		}
+		
 	}
 
 	public static List<Token> LexFile(String file) throws LexicalError,
