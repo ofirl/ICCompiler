@@ -1,4 +1,4 @@
-package iCCompiler;
+package iCLexer;
 
 import java_cup.runtime.Symbol;
 

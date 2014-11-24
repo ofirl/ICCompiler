@@ -1,4 +1,4 @@
-package iCCompiler;
+package iCLexer;
 
 public class sym {
 	// general

@@ -1,8 +1,7 @@
 /* JFlex example: part of Java language lexer specification */
-package JFlex;
+package iCLexer;
 
 import java_cup.runtime.*;
-import iCCompiler.*;
 
 /**
 * This class is a simple example lexer.
