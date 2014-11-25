@@ -3,25 +3,38 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import java_cup.runtime.Symbol;
+
 public class Main {
 
 	public static void main(String[] args) {
-		List<Token> tokens = new LinkedList <Token> ();
+//		List<Token> tokens = new LinkedList<Token>();
 
 		try {
-			tokens = LexFile(args[0]);
-		} catch (LexicalError e) {
-			PrintTokenError(e.getLine() + ": " + e.getMessage());
-			return;
+
+			FileReader txtFile = new FileReader(args[0]);
+			parser ps = new parser(new Lexer(txtFile));
+			Symbol mySym = ps.parse();
+			System.out.println(mySym.value);
+
+//			 tokens = LexFile(args[0]);
+//			 } catch (LexicalError e) {
+//			 PrintTokenError(e.getLine() + ": " + e.getMessage());
+//			 return;
 		} catch (Exception e) {
+			if (e instanceof LexicalError) {
+				PrintTokenError(e.getMessage());
+				return;
+			}
 			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
 		}
-		
+
+		System.out.println("Hip hip hooray !!");
 	}
 
 	public static List<Token> LexFile(String file) throws LexicalError,
 			Exception {
-		List<Token> tokens = new LinkedList <Token> ();
+		List<Token> tokens = new LinkedList<Token>();
 		Token currToken;
 		FileReader txtFile = new FileReader(file);
 		Lexer scanner = new Lexer(txtFile);

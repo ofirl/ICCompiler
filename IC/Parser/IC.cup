@@ -48,7 +48,7 @@ terminal        	STATIC;
 terminal        	VOID;
 terminal        	INT;
 terminal        	BOOLEAN;
-terminal        	STRING;
+terminal        	STRING; // the keyword string
 terminal        	RETURN;
 terminal        	IF;
 terminal        	ELSE;

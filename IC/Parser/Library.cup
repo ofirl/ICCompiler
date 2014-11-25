@@ -1,3 +1,81 @@
 package IC.Parser;
 
 import IC.AST.*;
+
+//parser code {:
+//    // Connect this parser to a scanner!
+//    scanner s;
+//    Parser(scanner s){ this.s=s; }
+//:}
+
+////////////////////////////////////////////
+// Symbol list (terminals and non-terminals)
+
+terminal         	ASSIGN; // do we need it ??
+
+// general
+terminal Integer 	NUM;
+terminal String  	ID;
+terminal String 	CLASS_ID;
+terminal String 	STR; // an actual string like "Nice"
+
+// operators
+terminal        	PLUS;
+terminal        	MINUS;
+terminal        	MULTIPLY;
+terminal        	DIVIDE;
+terminal        	NEGATION;
+terminal        	REMAINDER;
+terminal        	BIG;
+terminal        	BIGEQ;
+terminal        	SMALL;
+terminal        	SMALLEQ;
+terminal        	EQ;
+terminal        	EQCOMP;
+terminal        	AND;
+terminal        	OR;
+terminal        	DOT;
+terminal        	NOTEQCOMP;
+
+// punctuation
+terminal        	OPENROUNDPARENTEHSIS;
+terminal        	CLOSEROUNDPARENTHESIS;
+terminal        	OPENSQUAREPARENTEHSIS;
+terminal        	CLOSESQUAREPARENTHESIS;
+terminal        	SEMI;
+terminal        	COMMA;
+terminal        	OPENCURLYPARENTEHSIS;
+terminal        	CLOSECURLYPARENTHESIS;
+
+// keywords
+terminal        	CLASS;
+terminal        	EXTENDS;
+terminal        	STATIC;
+terminal        	VOID;
+terminal        	INT;
+terminal        	BOOLEAN;
+terminal        	STRING; // the keyword string
+terminal        	RETURN;
+terminal        	IF;
+terminal        	ELSE;
+terminal        	WHILE;
+terminal        	BREAK;
+terminal        	CONTINUE;
+terminal        	THIS;
+terminal        	NEW;
+terminal        	LENGTH;
+terminal        	TRUE;
+terminal        	FALSE;
+terminal        	NULL;
+
+
+nonterminal Program Program;
+nonterminal Integer Literal;
+
+//////////////////////////
+// Precedence declarations
+
+//////////////
+// The grammar
+
+Literal ::= STR:s {: System.out.println(s); RESULT = 111; :};

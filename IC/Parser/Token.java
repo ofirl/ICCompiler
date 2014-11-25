@@ -10,16 +10,8 @@ public class Token extends Symbol {
 	private String tagStr; // used for printing the tag as a String
 	private String value;
 
-	public Token(int sym_num, String tagStr, int line, int column) {
-		super(sym_num);
-		tag = sym_num;
-		this.line = line + 1;
-		this.column = column + 1;
-		this.tagStr = tagStr;
-	}
-	
 	public Token(int sym_num, String tagStr, int line, int column, String value) {
-		super(sym_num);
+		super(sym_num, value);
 		tag = sym_num;
 		this.line = line + 1;
 		this.column = column + 1;

@@ -12,7 +12,7 @@ public class LexicalError extends Exception {
 	}
 
 	public LexicalError(String message, int line, int column) {
-		this.message = message;
+		this.message = line + ": " + message;
 		this.line = line;
 		this.column = column;
 	}
