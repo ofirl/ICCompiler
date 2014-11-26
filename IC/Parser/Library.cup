@@ -1,17 +1,46 @@
 package IC.Parser;
 
 import IC.AST.*;
+import IC.*;
+import java_cup.runtime.*;
+import java.util.ArrayList;
+import java.util.List;
 
-//parser code {:
-//    // Connect this parser to a scanner!
-//    scanner s;
-//    Parser(scanner s){ this.s=s; }
-//:}
+parser code  {:
+	/** Causes the parser to print every token it reads.
+	 * This is useful for debugging.
+	 */
+	public boolean printTokens = true;
+	
+	private Lexer lexer;
+
+	public parser(Lexer lexer) {
+		super(lexer);
+		this.lexer = lexer;
+	}
+	
+	public int getLine() {
+		return lexer.getLineNumber();
+	}
+	
+	public void syntax_error(Symbol s) {
+		Token tok = (Token) s;
+		System.out.println("Line " + tok.getLine()+": Syntax error; unexpected " + tok);
+	}
+:}
+
+// This is just for debugging
+scan with {:
+	Token t = lexer.next_token();
+	if (printTokens)
+		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
+	return t; 
+:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
 
-terminal         	ASSIGN; // do we need it ??
+/////			Terminals			/////
 
 // general
 terminal Integer 	NUM;
@@ -20,57 +49,23 @@ terminal String 	CLASS_ID;
 terminal String 	STR; // an actual string like "Nice"
 
 // operators
-terminal        	PLUS;
-terminal        	MINUS;
-terminal        	MULTIPLY;
-terminal        	DIVIDE;
-terminal        	NEGATION;
-terminal        	REMAINDER;
-terminal        	BIG;
-terminal        	BIGEQ;
-terminal        	SMALL;
-terminal        	SMALLEQ;
-terminal        	EQ;
-terminal        	EQCOMP;
-terminal        	AND;
-terminal        	OR;
-terminal        	DOT;
-terminal        	NOTEQCOMP;
+terminal PLUS, MINUS, MULTIPLY, DIVIDE, NEGATION, REMAINDER, BIG, BIGEQ;
+terminal SMALL, SMALLEQ, EQ, EQCOMP, AND, OR, DOT, NOTEQCOMP;
 
 // punctuation
-terminal        	OPENROUNDPARENTEHSIS;
-terminal        	CLOSEROUNDPARENTHESIS;
-terminal        	OPENSQUAREPARENTEHSIS;
-terminal        	CLOSESQUAREPARENTHESIS;
-terminal        	SEMI;
-terminal        	COMMA;
-terminal        	OPENCURLYPARENTEHSIS;
-terminal        	CLOSECURLYPARENTHESIS;
+terminal LP, RP, LB, RB, LCBR, RCBR, SEMI, COMMA;
 
 // keywords
-terminal        	CLASS;
-terminal        	EXTENDS;
-terminal        	STATIC;
-terminal        	VOID;
-terminal        	INT;
-terminal        	BOOLEAN;
-terminal        	STRING; // the keyword string
-terminal        	RETURN;
-terminal        	IF;
-terminal        	ELSE;
-terminal        	WHILE;
-terminal        	BREAK;
-terminal        	CONTINUE;
-terminal        	THIS;
-terminal        	NEW;
-terminal        	LENGTH;
-terminal        	TRUE;
-terminal        	FALSE;
-terminal        	NULL;
+terminal CLASS, EXTENDS, STATIC, VOID, BOOLEAN, RETURN, IF, ELSE, WHILE;
+terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
+terminal INT; // the keyword int
+terminal STRING; // the keyword string
 
+/////			Non-Terminals			/////
 
-nonterminal Program Program;
-nonterminal Integer Literal;
+nonterminal LibraryMethod libmethod;
+nonterminal Type type;
+nonterminal Type typenvoid;
 
 //////////////////////////
 // Precedence declarations
@@ -78,4 +73,20 @@ nonterminal Integer Literal;
 //////////////
 // The grammar
 
-Literal ::= STR:s {: System.out.println(s); RESULT = 111; :};
+libmethod ::= STATIC typenvoid:t ID:method LP RP SEMI
+			{: RESULT = new LibraryMethod(t,method,new ArrayList<Formal>()); :}
+;
+
+typenvoid ::= VOID:v {: RESULT = new PrimitiveType(vleft,DataTypes.VOID); :}
+			| type:t {: RESULT = t; :}
+;
+
+type ::= INT:n
+		{: RESULT = new PrimitiveType(nleft,DataTypes.INT); :}
+		| BOOLEAN:b
+		{: RESULT = new PrimitiveType(bleft,DataTypes.BOOLEAN); :}
+		| STRING:s
+		{: RESULT = new PrimitiveType(sleft,DataTypes.STRING); :}
+		// Add | type LB RB and CLASS_ID:c
+;
+

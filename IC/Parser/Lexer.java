@@ -329,6 +329,10 @@ public class Lexer implements java_cup.runtime.Scanner {
 	private void lexError(String message) throws LexicalError {
 		throw new LexicalError(message, yyline+1, yycolumn+1);
 	}
+	
+	public int getLineNumber() {
+		return yyline+1;
+	}
 
 
   /**
@@ -776,27 +780,27 @@ public class Lexer implements java_cup.runtime.Scanner {
           }
         case 66: break;
         case 18: 
-          { return symbol(sym.OPENROUNDPARENTEHSIS, "(", yytext());
+          { return symbol(sym.LP, "(", yytext());
           }
         case 67: break;
         case 19: 
-          { return symbol(sym.CLOSEROUNDPARENTHESIS, ")", yytext());
+          { return symbol(sym.RP, ")", yytext());
           }
         case 68: break;
         case 20: 
-          { return symbol(sym.OPENSQUAREPARENTEHSIS, "[", yytext());
+          { return symbol(sym.LB, "[", yytext());
           }
         case 69: break;
         case 21: 
-          { return symbol(sym.CLOSESQUAREPARENTHESIS, "]", yytext());
+          { return symbol(sym.RB, "]", yytext());
           }
         case 70: break;
         case 22: 
-          { return symbol(sym.OPENCURLYPARENTEHSIS, "{", yytext());
+          { return symbol(sym.LCBR, "{", yytext());
           }
         case 71: break;
         case 23: 
-          { return symbol(sym.CLOSECURLYPARENTHESIS, "}", yytext());
+          { return symbol(sym.RCBR, "}", yytext());
           }
         case 72: break;
         case 24: 

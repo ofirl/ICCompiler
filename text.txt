@@ -1,1 +1,1 @@
-"sdeg34"
+static int coolMethod123();

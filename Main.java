@@ -1,3 +1,4 @@
+import IC.AST.LibraryMethod;
 import IC.Parser.*;
 import java.io.*;
 import java.util.LinkedList;
@@ -15,9 +16,10 @@ public class Main {
 			FileReader txtFile = new FileReader(args[0]);
 			parser ps = new parser(new Lexer(txtFile));
 			Symbol mySym = ps.parse();
-			System.out.println(mySym.value);
+			LibraryMethod m = (LibraryMethod) mySym.value;
+			System.out.println(m.getName());
 
-//			 tokens = LexFile(args[0]);
+//		    tokens = LexFile(args[0]);
 //			 } catch (LexicalError e) {
 //			 PrintTokenError(e.getLine() + ": " + e.getMessage());
 //			 return;
@@ -28,8 +30,6 @@ public class Main {
 			}
 			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
 		}
-
-		System.out.println("Hip hip hooray !!");
 	}
 
 	public static List<Token> LexFile(String file) throws LexicalError,

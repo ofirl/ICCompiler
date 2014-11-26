@@ -29,6 +29,10 @@ import java_cup.runtime.*;
 	private void lexError(String message) throws LexicalError {
 		throw new LexicalError(message, yyline+1, yycolumn+1);
 	}
+	
+	public int getLineNumber() {
+		return yyline+1;
+	}
 %}
 	
 	LineTerminator = \r|\n|\r\n
@@ -117,12 +121,12 @@ import java_cup.runtime.*;
 		{Comma} { return symbol(sym.COMMA, ",", yytext()); }
 		
 		/* Parenthesis */
-		\( { return symbol(sym.OPENROUNDPARENTEHSIS, "(", yytext()); }
-		\) { return symbol(sym.CLOSEROUNDPARENTHESIS, ")", yytext()); }
-		"[" { return symbol(sym.OPENSQUAREPARENTEHSIS, "[", yytext()); }
-		"]" { return symbol(sym.CLOSESQUAREPARENTHESIS, "]", yytext()); }
-		"{" { return symbol(sym.OPENCURLYPARENTEHSIS, "{", yytext()); }
-		"}" { return symbol(sym.CLOSECURLYPARENTHESIS, "}", yytext()); }
+		\( { return symbol(sym.LP, "(", yytext()); }
+		\) { return symbol(sym.RP, ")", yytext()); }
+		"[" { return symbol(sym.LB, "[", yytext()); }
+		"]" { return symbol(sym.RB, "]", yytext()); }
+		"{" { return symbol(sym.LCBR, "{", yytext()); }
+		"}" { return symbol(sym.RCBR, "}", yytext()); }
 		
 		/* comments */
 		{Comment} { /* ignore */ }

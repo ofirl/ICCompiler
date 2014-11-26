@@ -11,7 +11,9 @@ public class Token extends Symbol {
 	private String value;
 
 	public Token(int sym_num, String tagStr, int line, int column, String value) {
-		super(sym_num, value);
+		// line+1 will be the left field in the parent class and column+1 will
+		// be the right field.
+		super(sym_num, line + 1, column + 1, value);
 		tag = sym_num;
 		this.line = line + 1;
 		this.column = column + 1;
