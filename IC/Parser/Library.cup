@@ -3,6 +3,7 @@ package IC.Parser;
 import IC.AST.*;
 import IC.*;
 import java_cup.runtime.*;
+import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,9 +64,13 @@ terminal STRING; // the keyword string
 
 /////			Non-Terminals			/////
 
+nonterminal ICClass libic;
+nonterminal String libicpref;
+nonterminal List<Method> libmethodList;
 nonterminal LibraryMethod libmethod;
 nonterminal Type type;
 nonterminal Type typenvoid;
+nonterminal List<Formal> formals;
 
 //////////////////////////
 // Precedence declarations
@@ -73,8 +78,29 @@ nonterminal Type typenvoid;
 //////////////
 // The grammar
 
+libic ::= libicpref:c libmethodList:lst RCBR
+		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); :}
+		| libicpref:c RCBR
+		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), new LinkedList<Method>()); :}
+;
+
+libicpref ::= CLASS CLASS_ID:c LCBR
+				{:
+					if(!c.equals("Library")) throw new Exception("It Should be Library!!");
+					RESULT = c;
+				:}
+;
+
+libmethodList ::= libmethod:m
+			{: RESULT = new LinkedList<Method>(); RESULT.add(m); :}
+			| libmethodList:lst libmethod:m
+			{: lst.add(m); RESULT = lst; :}
+;
+
 libmethod ::= STATIC typenvoid:t ID:method LP RP SEMI
 			{: RESULT = new LibraryMethod(t,method,new ArrayList<Formal>()); :}
+			| STATIC typenvoid:t ID:method LP formals:f RP SEMI
+			{: RESULT = new LibraryMethod(t,method,f); :}
 ;
 
 typenvoid ::= VOID:v {: RESULT = new PrimitiveType(vleft,DataTypes.VOID); :}
@@ -87,6 +113,12 @@ type ::= INT:n
 		{: RESULT = new PrimitiveType(bleft,DataTypes.BOOLEAN); :}
 		| STRING:s
 		{: RESULT = new PrimitiveType(sleft,DataTypes.STRING); :}
-		// Add | type LB RB and CLASS_ID:c
+		| CLASS_ID:c
+		{: RESULT = new UserType(cleft,c); :}
+		| type:t LB RB
+		{: t.incrementDimension(); RESULT = t; :}
 ;
 
+formals ::= type:t ID:i {: RESULT = new LinkedList<Formal>(); RESULT.add(new Formal(t,i)); :}
+			| formals:f COMMA type:t ID:i  {: f.add(new Formal(t,i)); RESULT = f; :}
+;

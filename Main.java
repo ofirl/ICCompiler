@@ -1,4 +1,4 @@
-import IC.AST.LibraryMethod;
+import IC.AST.*;
 import IC.Parser.*;
 import java.io.*;
 import java.util.LinkedList;
@@ -16,8 +16,9 @@ public class Main {
 			FileReader txtFile = new FileReader(args[0]);
 			parser ps = new parser(new Lexer(txtFile));
 			Symbol mySym = ps.parse();
-			LibraryMethod m = (LibraryMethod) mySym.value;
-			System.out.println(m.getName());
+			ICClass c = (ICClass) mySym.value;
+			Visitor v = new PrettyPrinter("ICFilePath"); // we need to change this string
+			System.out.println(c.accept(v));
 
 //		    tokens = LexFile(args[0]);
 //			 } catch (LexicalError e) {

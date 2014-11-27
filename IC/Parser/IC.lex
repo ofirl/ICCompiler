@@ -52,7 +52,8 @@ import java_cup.runtime.*;
 	ClassIdentifier = [A-Z] ({AlphaNumeric} | "_")*
 	Identifier = [a-z] ({AlphaNumeric} | "_")*
 	NotIdentifier = "_" ({AlphaNumeric} | "_")
-	DecIntegerLiteral = 0 | [1-9][0-9]*
+	OnlyZeroes = 0 [0]*
+	DecIntegerLiteral = (0 | [1-9][0-9]* | {OnlyZeroes})
 	NotInteger = 0 [0-9]+
 	
 	/* Punctuation */
