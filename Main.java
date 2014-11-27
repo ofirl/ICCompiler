@@ -21,9 +21,6 @@ public class Main {
 			System.out.println(c.accept(v));
 
 //		    tokens = LexFile(args[0]);
-//			 } catch (LexicalError e) {
-//			 PrintTokenError(e.getLine() + ": " + e.getMessage());
-//			 return;
 		} catch (Exception e) {
 			if (e instanceof LexicalError) {
 				PrintTokenError(e.getMessage());

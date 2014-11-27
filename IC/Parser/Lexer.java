@@ -333,6 +333,10 @@ public class Lexer implements java_cup.runtime.Scanner {
 	public int getLineNumber() {
 		return yyline+1;
 	}
+	
+	public int getColumnNumber() {
+		return yycolumn+1;
+	}
 
 
   /**

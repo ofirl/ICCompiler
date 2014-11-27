@@ -20,8 +20,14 @@ parser code  {:
 		this.lexer = lexer;
 	}
 	
+	// we can use it to get the line number of current token
 	public int getLine() {
 		return lexer.getLineNumber();
+	}
+	
+	// we can use it to get the column number of current token
+	public int getColumn() {
+		return lexer.getColumnNumber();
 	}
 	
 	public void syntax_error(Symbol s) {
@@ -65,7 +71,6 @@ terminal STRING; // the keyword string
 /////			Non-Terminals			/////
 
 nonterminal ICClass libic;
-nonterminal String libicpref;
 nonterminal List<Method> libmethodList;
 nonterminal LibraryMethod libmethod;
 nonterminal Type type;
@@ -78,17 +83,10 @@ nonterminal List<Formal> formals;
 //////////////
 // The grammar
 
-libic ::= libicpref:c libmethodList:lst RCBR
+libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
 		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); :}
-		| libicpref:c RCBR
+		| CLASS CLASS_ID:c LCBR RCBR
 		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), new LinkedList<Method>()); :}
-;
-
-libicpref ::= CLASS CLASS_ID:c LCBR
-				{:
-					if(!c.equals("Library")) throw new Exception("It Should be Library!!");
-					RESULT = c;
-				:}
 ;
 
 libmethodList ::= libmethod:m
@@ -103,18 +101,18 @@ libmethod ::= STATIC typenvoid:t ID:method LP RP SEMI
 			{: RESULT = new LibraryMethod(t,method,f); :}
 ;
 
-typenvoid ::= VOID:v {: RESULT = new PrimitiveType(vleft,DataTypes.VOID); :}
+typenvoid ::= VOID:v {: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :}
 			| type:t {: RESULT = t; :}
 ;
 
 type ::= INT:n
-		{: RESULT = new PrimitiveType(nleft,DataTypes.INT); :}
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.INT); :} // can use nleft instead of getLine()
 		| BOOLEAN:b
-		{: RESULT = new PrimitiveType(bleft,DataTypes.BOOLEAN); :}
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.BOOLEAN); :} // can use bleft instead of getLine()
 		| STRING:s
-		{: RESULT = new PrimitiveType(sleft,DataTypes.STRING); :}
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.STRING); :} // can use sleft instead of getLine()
 		| CLASS_ID:c
-		{: RESULT = new UserType(cleft,c); :}
+		{: RESULT = new UserType(getLine(),c); :} // can use cleft instead of getLine()
 		| type:t LB RB
 		{: t.incrementDimension(); RESULT = t; :}
 ;

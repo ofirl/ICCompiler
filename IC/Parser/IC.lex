@@ -33,6 +33,10 @@ import java_cup.runtime.*;
 	public int getLineNumber() {
 		return yyline+1;
 	}
+	
+	public int getColumnNumber() {
+		return yycolumn+1;
+	}
 %}
 	
 	LineTerminator = \r|\n|\r\n

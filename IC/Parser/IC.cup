@@ -1,11 +1,53 @@
 package IC.Parser;
 
 import IC.AST.*;
+import IC.*;
+import java_cup.runtime.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+
+parser code  {:
+	/** Causes the parser to print every token it reads.
+	 * This is useful for debugging.
+	 */
+	public boolean printTokens = true;
+	
+	private Lexer lexer;
+
+	public parser(Lexer lexer) {
+		super(lexer);
+		this.lexer = lexer;
+	}
+	
+	// we can use it to get the line number of current token
+	public int getLine() {
+		return lexer.getLineNumber();
+	}
+	
+	// we can use it to get the column number of current token
+	public int getColumn() {
+		return lexer.getColumnNumber();
+	}
+	
+	public void syntax_error(Symbol s) {
+		Token tok = (Token) s;
+		System.out.println("Line " + tok.getLine()+": Syntax error; unexpected " + tok);
+	}
+:}
+
+// This is just for debugging
+scan with {:
+	Token t = lexer.next_token();
+	if (printTokens)
+		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
+	return t; 
+:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
 
-terminal         	ASSIGN; // do we need it ??
+/////			Terminals			/////
 
 // general
 terminal Integer 	NUM;
@@ -14,57 +56,26 @@ terminal String 	CLASS_ID;
 terminal String 	STR; // an actual string like "Nice"
 
 // operators
-terminal        	PLUS;
-terminal        	MINUS;
-terminal        	MULTIPLY;
-terminal        	DIVIDE;
-terminal        	NEGATION;
-terminal        	REMAINDER;
-terminal        	BIG;
-terminal        	BIGEQ;
-terminal        	SMALL;
-terminal        	SMALLEQ;
-terminal        	EQ;
-terminal        	EQCOMP;
-terminal        	AND;
-terminal        	OR;
-terminal        	DOT;
-terminal        	NOTEQCOMP;
+terminal PLUS, MINUS, MULTIPLY, DIVIDE, NEGATION, REMAINDER, BIG, BIGEQ;
+terminal SMALL, SMALLEQ, EQ, EQCOMP, AND, OR, DOT, NOTEQCOMP;
 
 // punctuation
-terminal        	OPENROUNDPARENTEHSIS;
-terminal        	CLOSEROUNDPARENTHESIS;
-terminal        	OPENSQUAREPARENTEHSIS;
-terminal        	CLOSESQUAREPARENTHESIS;
-terminal        	SEMI;
-terminal        	COMMA;
-terminal        	OPENCURLYPARENTEHSIS;
-terminal        	CLOSECURLYPARENTHESIS;
+terminal LP, RP, LB, RB, LCBR, RCBR, SEMI, COMMA;
 
 // keywords
-terminal        	CLASS;
-terminal        	EXTENDS;
-terminal        	STATIC;
-terminal        	VOID;
-terminal        	INT;
-terminal        	BOOLEAN;
-terminal        	STRING; // the keyword string
-terminal        	RETURN;
-terminal        	IF;
-terminal        	ELSE;
-terminal        	WHILE;
-terminal        	BREAK;
-terminal        	CONTINUE;
-terminal        	THIS;
-terminal        	NEW;
-terminal        	LENGTH;
-terminal        	TRUE;
-terminal        	FALSE;
-terminal        	NULL;
+terminal CLASS, EXTENDS, STATIC, VOID, BOOLEAN, RETURN, IF, ELSE, WHILE;
+terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
+terminal INT; // the keyword int
+terminal STRING; // the keyword string
 
+/////			Non-Terminals			/////
 
-nonterminal Program Program;
-nonterminal Literal Literal;
+nonterminal ICClass libic;
+nonterminal List<Method> libmethodList;
+nonterminal LibraryMethod libmethod;
+nonterminal Type type;
+nonterminal Type typenvoid;
+nonterminal List<Formal> formals;
 
 //////////////////////////
 // Precedence declarations
@@ -72,4 +83,40 @@ nonterminal Literal Literal;
 //////////////
 // The grammar
 
-Literal ::= NUM; // | NULL;
+libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
+		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); :}
+		| CLASS CLASS_ID:c LCBR RCBR
+		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), new LinkedList<Method>()); :}
+;
+
+libmethodList ::= libmethod:m
+			{: RESULT = new LinkedList<Method>(); RESULT.add(m); :}
+			| libmethodList:lst libmethod:m
+			{: lst.add(m); RESULT = lst; :}
+;
+
+libmethod ::= STATIC typenvoid:t ID:method LP RP SEMI
+			{: RESULT = new LibraryMethod(t,method,new ArrayList<Formal>()); :}
+			| STATIC typenvoid:t ID:method LP formals:f RP SEMI
+			{: RESULT = new LibraryMethod(t,method,f); :}
+;
+
+typenvoid ::= VOID:v {: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :}
+			| type:t {: RESULT = t; :}
+;
+
+type ::= INT:n
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.INT); :} // can use nleft instead of getLine()
+		| BOOLEAN:b
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.BOOLEAN); :} // can use bleft instead of getLine()
+		| STRING:s
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.STRING); :} // can use sleft instead of getLine()
+		| CLASS_ID:c
+		{: RESULT = new UserType(getLine(),c); :} // can use cleft instead of getLine()
+		| type:t LB RB
+		{: t.incrementDimension(); RESULT = t; :}
+;
+
+formals ::= type:t ID:i {: RESULT = new LinkedList<Formal>(); RESULT.add(new Formal(t,i)); :}
+			| formals:f COMMA type:t ID:i  {: f.add(new Formal(t,i)); RESULT = f; :}
+;
