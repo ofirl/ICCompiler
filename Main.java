@@ -16,7 +16,7 @@ public class Main {
 			FileReader txtFile = new FileReader(args[0]);
 			parser ps = new parser(new Lexer(txtFile));
 			Symbol mySym = ps.parse();
-			ICClass c = (ICClass) mySym.value;
+			ASTNode c = (ASTNode) mySym.value;
 			Visitor v = new PrettyPrinter("ICFilePath"); // we need to change this string
 			System.out.println(c.accept(v));
 

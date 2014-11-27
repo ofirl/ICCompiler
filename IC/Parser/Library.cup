@@ -75,7 +75,8 @@ nonterminal List<Method> libmethodList;
 nonterminal LibraryMethod libmethod;
 nonterminal Type type;
 nonterminal Type typenvoid;
-nonterminal List<Formal> formals;
+nonterminal List<Formal> formalsList; // list can be empty
+nonterminal List<Formal> formals; // list can't be empty 
 
 //////////////////////////
 // Precedence declarations
@@ -84,20 +85,19 @@ nonterminal List<Formal> formals;
 // The grammar
 
 libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
-		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); :}
-		| CLASS CLASS_ID:c LCBR RCBR
-		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), new LinkedList<Method>()); :}
+		{: 
+			if(!c.equals("Library")) throw new Exception("Stupid error: class name must be Library!");
+			RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); 
+		:}
 ;
 
-libmethodList ::= libmethod:m
-			{: RESULT = new LinkedList<Method>(); RESULT.add(m); :}
-			| libmethodList:lst libmethod:m
+libmethodList ::= libmethodList:lst libmethod:m
 			{: lst.add(m); RESULT = lst; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Method>(); :}
 ;
 
-libmethod ::= STATIC typenvoid:t ID:method LP RP SEMI
-			{: RESULT = new LibraryMethod(t,method,new ArrayList<Formal>()); :}
-			| STATIC typenvoid:t ID:method LP formals:f RP SEMI
+libmethod ::= STATIC typenvoid:t ID:method LP formalsList:f RP SEMI
 			{: RESULT = new LibraryMethod(t,method,f); :}
 ;
 
@@ -117,6 +117,15 @@ type ::= INT:n
 		{: t.incrementDimension(); RESULT = t; :}
 ;
 
-formals ::= type:t ID:i {: RESULT = new LinkedList<Formal>(); RESULT.add(new Formal(t,i)); :}
-			| formals:f COMMA type:t ID:i  {: f.add(new Formal(t,i)); RESULT = f; :}
+formalsList ::= formals:f
+			{: RESULT = f; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Formal>(); :}
 ;
+
+formals ::= type:t ID:i
+			{: RESULT = new LinkedList<Formal>(); RESULT.add(new Formal(t,i)); :}
+			| formals:f COMMA type:t ID:i
+			{: f.add(new Formal(t,i)); RESULT = f; :}
+;
+

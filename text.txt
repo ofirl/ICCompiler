@@ -1,12 +1,20 @@
-class
-Library
-{
-static 
-int 
-println
-(
-int
-s
-)
-;
+class CLibrary {
+	static int println(int[] a, string c);
 }
+
+class EmptyClass {
+}
+
+
+//class
+//Library
+//{
+//static 
+//int 
+//println
+//(
+//int
+//s
+//)
+//;
+//}
