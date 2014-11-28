@@ -14,7 +14,7 @@ public class Main {
 		try {
 
 			FileReader txtFile = new FileReader(args[0]);
-			parser ps = new parser(new Lexer(txtFile));
+		    parser ps = new parser(new Lexer(txtFile));
 			Symbol mySym = ps.parse();
 			ASTNode c = (ASTNode) mySym.value;
 			Visitor v = new PrettyPrinter("ICFilePath"); // we need to change this string
