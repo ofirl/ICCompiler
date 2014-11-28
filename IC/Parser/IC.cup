@@ -50,7 +50,7 @@ scan with {:
 /////			Terminals			/////
 
 // general
-terminal Integer 	NUM;
+terminal String 	NUM;
 terminal String  	ID;
 terminal String 	CLASS_ID;
 terminal String 	STR; // an actual string like "Nice"
@@ -68,6 +68,8 @@ terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
 terminal INT; // the keyword int
 terminal STRING; // the keyword string
 
+// unreal terminals
+terminal UMINUS, LNEG;
 
 /////			Non-Terminals			/////
 
@@ -96,12 +98,22 @@ nonterminal StaticCall staticCall;
 nonterminal VirtualCall virtualCall;
 nonterminal List<Expression> expr_args;
 nonterminal List<Expression> expr_comma;
+nonterminal Expression expr_op;
+
+
+nonterminal Literal literal;
 nonterminal Expression optionalReturnValue;
 nonterminal Statement optionalElse;
-
 //////////////////////////
 // Precedence declarations
 
+precedence left OR;
+precedence left AND;
+precedence left EQCOMP, NOTEQCOMP;
+precedence left SMALL, SMALLEQ, BIG, BIGEQ;
+precedence left PLUS, MINUS;
+precedence left MULTIPLY, DIVIDE, REMAINDER;
+precedence right UMINUS, LNEG;
 precedence left ELSE;
 
 //////////////
@@ -240,6 +252,8 @@ expr ::= location:l {: RESULT = l; :}
 		| NEW CLASS_ID:c LP RP {: RESULT = new NewClass(cleft,c); :}
 		| NEW type:t LB expr:e RB {: RESULT = new NewArray(t,e); :}
 		| expr:e DOT LENGTH {: RESULT = new Length(e); :}
+		| expr_op:e {: RESULT = e; :}
+		| literal:l {: RESULT = l; :}
 ;
 
 location ::= ID:i {: RESULT = new VariableLocation(ileft,i); :}
@@ -276,4 +290,43 @@ expr_comma ::= expr_comma:lst COMMA expr:e
 			{: lst.add(e); RESULT = lst; :}
 			| // epsilon
 			{: RESULT = new LinkedList<Expression>(); :}
+;
+
+expr_op ::= expr:e1 PLUS expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.PLUS, e2); :}
+			| expr:e1 MINUS expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MINUS, e2); :}
+			| expr:e1 MULTIPLY expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MULTIPLY, e2); :}
+			| expr:e1 DIVIDE expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.DIVIDE, e2); :}
+			| expr:e1 REMAINDER expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MOD, e2); :}
+			| expr:e1 AND expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.LAND, e2); :}
+			| expr:e1 OR expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.LOR, e2); :}
+			| expr:e1 SMALL expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.LT, e2); :}
+			| expr:e1 SMALLEQ expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.LTE, e2); :}
+			| expr:e1 BIG expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.GT, e2); :}
+			| expr:e1 BIGEQ expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.GTE, e2); :}
+			| expr:e1 EQCOMP expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.EQUAL, e2); :}
+			| expr:e1 NOTEQCOMP expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.NEQUAL, e2); :}
+			| NEGATION expr:e
+			{: RESULT = new MathUnaryOp(UnaryOps.LNEG, e); :} %prec LNEG
+			| MINUS expr:e
+			{: RESULT = new MathUnaryOp(UnaryOps.UMINUS, e); :} %prec UMINUS
+;
+
+literal ::= NUM:n {: RESULT = new Literal(nleft, LiteralTypes.INTEGER, n); :}
+			| STR:s {: RESULT = new Literal(sleft, LiteralTypes.STRING, s); :} // not done here yet
+			| TRUE:t {: RESULT = new Literal(tleft, LiteralTypes.TRUE); :}
+			| FALSE:f {: RESULT = new Literal(fleft, LiteralTypes.FALSE); :}
+			| NULL:n {: RESULT = new Literal(nleft, LiteralTypes.NULL); :}
 ;
