@@ -15,11 +15,41 @@ class EmptyClass extends Cool {
 		.
 		y
 		;
-		
+		//string bla = 4;
 		boolean
 		x
 		=
 		ar[x].field;
+		
+		x.y() ;
+		return ;
+		return ar[x].field;
+		
+		if (this)
+			if(x)
+				break;
+			else
+				x.y();
+		else
+			y.x();
+			
+		while(this)
+			continue;
+		
+		break;
+		continue;
+		
+		if(this)
+		{
+			x.y();
+			x.z();
+		}
+		else
+		{
+			y.x();
+			z.x();
+		}
+			
 	}
 	string s;
 }
