@@ -73,12 +73,27 @@ terminal STRING; // the keyword string
 nonterminal Program program;
 nonterminal List<ICClass> class_list;
 nonterminal ICClass classDecl;
-nonterminal List<Method> libmethodList;
-nonterminal LibraryMethod libmethod;
+nonterminal String optionalExtends;
+nonterminal FieldsOrMethods fieldsnmethods;
+nonterminal List<Field> fields;
+nonterminal List<String> optionalFields;
+nonterminal Method method;
 nonterminal Type type;
 nonterminal Type typenvoid;
+nonterminal Type virtualvoid;
 nonterminal List<Formal> formalsList;
 nonterminal List<Formal> formals;
+
+// statements related
+nonterminal List<Statement> stmt_list;
+nonterminal Statement stmt;
+nonterminal Expression expr;
+nonterminal Location location;
+nonterminal Call call;
+nonterminal StaticCall staticCall;
+nonterminal VirtualCall virtualCall;
+nonterminal List<Expression> expr_args;
+nonterminal List<Expression> expr_comma;
 
 //////////////////////////
 // Precedence declarations
@@ -96,18 +111,54 @@ class_list ::= class_list:cl classDecl:c
       {: RESULT = new LinkedList<ICClass>(); :}
 ;
 
-classDecl ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
-		{: RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); :}
+classDecl ::= CLASS CLASS_ID:c optionalExtends:ext LCBR fieldsnmethods:x RCBR
+		{:
+			if(ext != null)
+				RESULT = new ICClass(cleft, c, ext, x.getFields(), x.getMethods());
+			else
+				RESULT = new ICClass(cleft, c, x.getFields(), x.getMethods());
+		:}
 ;
 
-libmethodList ::= libmethodList:lst libmethod:m
-			{: lst.add(m); RESULT = lst; :}
-			| // epsilon
-			{: RESULT = new LinkedList<Method>(); :}
+optionalExtends ::= EXTENDS CLASS_ID:c
+				{: RESULT = c; :}
+				| // epsilon
+				{: RESULT = null; :}
 ;
 
-libmethod ::= STATIC typenvoid:t ID:method LP formalsList:f RP SEMI
-			{: RESULT = new LibraryMethod(t,method,f); :}
+fieldsnmethods ::= fieldsnmethods:lst fields:c
+					{: lst.add(c); RESULT = lst; :}
+					| fieldsnmethods:lst method:c
+					{: lst.add(c); RESULT = lst; :}
+					| // epsilon
+					{: RESULT = new FieldsOrMethods(); :}
+;
+
+fields ::= type:t ID:i optionalFields:f SEMI
+		{:
+			f.add(0,i);
+			RESULT = new LinkedList<Field>();
+			for (String s : f)
+				RESULT.add(new Field(t,s));;
+		:}
+;
+
+optionalFields ::= optionalFields:f COMMA ID:i
+				{: f.add(i); RESULT = f; :}
+				| // epsilon
+				{: RESULT = new LinkedList<String>(); :}
+;
+
+method ::= STATIC typenvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new StaticMethod(t,i,f,s); :}
+			| type:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new VirtualMethod(t,i,f,s); :}
+			| virtualvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new VirtualMethod(t,i,f,s); :}
+;
+
+virtualvoid ::= VOID:v
+			{: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :} // can use vleft ...
 ;
 
 typenvoid ::= VOID:v {: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :}
@@ -138,3 +189,56 @@ formals ::= type:t ID:i
 			{: f.add(new Formal(t,i)); RESULT = f; :}
 ;
 
+// statements related
+stmt_list ::= stmt_list:lst stmt:s
+		{: lst.add(s); RESULT = lst; :}
+		| // epsilon
+		{: RESULT = new LinkedList<Statement>(); :}
+;
+
+stmt ::= type:t ID:i SEMI
+		{: RESULT = new LocalVariable(t,i); :}
+		| type:t ID:i EQ expr:e SEMI
+		{: RESULT = new LocalVariable(t,i,e); :}
+;
+
+expr ::= location:l {: RESULT = l; :}
+		| call:c {: RESULT = c; :}
+		| THIS:t {: RESULT = new This(tleft); :}
+		| NEW CLASS_ID:c LP RP {: RESULT = new NewClass(cleft,c); :}
+		| NEW type:t LB expr:e RB {: RESULT = new NewArray(t,e); :}
+		| expr:e DOT LENGTH {: RESULT = new Length(e); :}
+;
+
+location ::= ID:i {: RESULT = new VariableLocation(ileft,i); :}
+			| expr:e DOT ID:i
+			{: RESULT = new VariableLocation(ileft,e,i); :}
+			| expr:e1 LB expr:e2 RB
+			{: RESULT = new ArrayLocation(e1,e2); :}
+;
+
+call ::= staticCall:s {: RESULT = s; :}
+		| virtualCall:v {: RESULT = v; :}
+;
+
+staticCall ::= CLASS_ID:c DOT ID:i LP expr_args:args RP
+			{: RESULT = new StaticCall(ileft,c,i,args); :}
+;
+
+virtualCall ::= expr:e DOT ID:i LP expr_args:args RP
+			{: RESULT = new VirtualCall(ileft,e,i,args); :}
+			| ID:i LP expr_args:args RP
+			{: RESULT = new VirtualCall(ileft,i,args); :}
+;
+
+expr_args ::= expr:e expr_comma:lst
+			{: lst.add(0, e); RESULT = lst; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Expression>(); :}
+;
+
+expr_comma ::= expr_comma:lst COMMA expr:e
+			{: lst.add(e); RESULT = lst; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Expression>(); :}
+;

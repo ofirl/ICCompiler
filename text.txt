@@ -1,8 +1,27 @@
 class CLibrary {
-	static int println(int[] a, string c);
+	void println(int[] a, string c) {
+		MyClass m = array.length;
+	}
 }
 
-class EmptyClass {
+class EmptyClass extends Cool {
+	int x, y, z;
+	static string[][][] f(int[] a, Cool c) {
+		int 
+		mmyint = 
+		y;
+		string mystring =
+		x
+		.
+		y
+		;
+		
+		boolean
+		x
+		=
+		ar[x].field;
+	}
+	string s;
 }
 
 
