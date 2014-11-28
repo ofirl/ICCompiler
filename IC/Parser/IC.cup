@@ -68,6 +68,7 @@ terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
 terminal INT; // the keyword int
 terminal STRING; // the keyword string
 
+
 /////			Non-Terminals			/////
 
 nonterminal Program program;
@@ -89,14 +90,19 @@ nonterminal List<Statement> stmt_list;
 nonterminal Statement stmt;
 nonterminal Expression expr;
 nonterminal Location location;
+nonterminal CallStatement callStatement;
 nonterminal Call call;
 nonterminal StaticCall staticCall;
 nonterminal VirtualCall virtualCall;
 nonterminal List<Expression> expr_args;
 nonterminal List<Expression> expr_comma;
+nonterminal Expression optionalReturnValue;
+nonterminal Statement optionalElse;
 
 //////////////////////////
 // Precedence declarations
+
+precedence left ELSE;
 
 //////////////
 // The grammar
@@ -200,6 +206,32 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = new LocalVariable(t,i); :}
 		| type:t ID:i EQ expr:e SEMI
 		{: RESULT = new LocalVariable(t,i,e); :}
+		| callStatement:c SEMI
+		{: RESULT = c ; :}
+		| RETURN optionalReturnValue:or SEMI
+		{: RESULT = new Return(getLine(),or); :}
+		| IF LP expr:cond RP stmt:s optionalElse:e
+		{: RESULT = new If(cond,s,e); :}
+		| WHILE LP expr:cond RP stmt:s
+		{: RESULT = new While(cond,s) ; :}
+		| BREAK SEMI
+		{: RESULT = new Break(getLine()) ; :}
+		| CONTINUE SEMI
+		{: RESULT = new Continue(getLine()); :}
+		| LCBR stmt_list:sl RCBR
+		{: RESULT = new StatementsBlock(getLine(),sl); :}
+;
+
+optionalElse ::= ELSE stmt:s
+		{: RESULT = s ; :}
+		| // epsilon
+		{: RESULT = null ; :}
+;
+
+optionalReturnValue ::= expr:e
+		{: RESULT = e ; :}
+		| // epsilon
+		{: RESULT = null ; :}
 ;
 
 expr ::= location:l {: RESULT = l; :}
@@ -215,6 +247,9 @@ location ::= ID:i {: RESULT = new VariableLocation(ileft,i); :}
 			{: RESULT = new VariableLocation(ileft,e,i); :}
 			| expr:e1 LB expr:e2 RB
 			{: RESULT = new ArrayLocation(e1,e2); :}
+;
+
+callStatement ::= call:c {: RESULT = new CallStatement(c); :}
 ;
 
 call ::= staticCall:s {: RESULT = s; :}
