@@ -1,5 +1,6 @@
 package IC.Parser;
 
+import java.util.Collections;
 import IC.AST.*;
 import IC.*;
 import java_cup.runtime.*;
@@ -59,8 +60,6 @@ parser code  {:
 		Token tok = (Token) s;
 		StringBuffer sb = new StringBuffer();
 		
-		Collections.sort(sortedlst);
-		
 		if (!sortedlst.isEmpty()) {
 			boolean firstStr = true;
 			for (String str : sortedlst) {
@@ -82,6 +81,7 @@ parser code  {:
 			sortedlst.add(sym.terminalNames[n]);
 		
 		// sort sortedlst lexicographically
+		Collections.sort(sortedlst);
 	}
 :}
 
