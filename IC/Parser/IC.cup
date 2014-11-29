@@ -14,6 +14,7 @@ parser code  {:
 //	public boolean printTokens = true;
 	
 	private Lexer lexer;
+	private List<String> sortedlst = new LinkedList<String>();
 
 	public parser(Lexer lexer) {
 		super(lexer);
@@ -54,10 +55,31 @@ parser code  {:
 		return sb.toString();
 	}
 	
-	public void syntax_error(Symbol s) {
+	public void unrecovered_syntax_error(Symbol s) throws SyntaxError {
 		Token tok = (Token) s;
-		// List<Integer> c = expected_token_ids();
-		System.out.println("Line " + tok.getLine()+": Syntax error; unexpected " + tok);
+		StringBuffer sb = new StringBuffer();
+		
+		if (!sortedlst.isEmpty()) {
+			boolean firstStr = true;
+			for (String str : sortedlst) {
+				if (firstStr) {
+					firstStr = false;
+					sb.append("'" + Token.convertTag(str) + "'");
+				} else {
+					sb.append(" or '" + Token.convertTag(str) + "'");
+				}
+			}
+		}
+		String errMsg = "expected " + sb.toString() + ", but found '" + tok.getValue() + "'";
+		throw new SyntaxError(errMsg,tok.getLine(),tok.getColumn());
+	}
+	
+	public void syntax_error(Symbol s) {
+		List<Integer> expectedTags = expected_token_ids();
+		for (Integer n : expectedTags)
+			sortedlst.add(sym.terminalNames[n]);
+		
+		// sort sortedlst lexicographically
 	}
 :}
 

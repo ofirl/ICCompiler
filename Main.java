@@ -9,43 +9,69 @@ import java_cup.runtime.Symbol;
 public class Main {
 
 	public static void main(String[] args) {
-//		List<Token> tokens = new LinkedList<Token>();
-		
+		// List<Token> tokens = new LinkedList<Token>();
 		try {
-
+			// tokens = LexFile(args[0]);
+			
 			String libFile = "libic.sig";
 			if (args.length > 1) {
 				libFile = args[1];
-				if (libFile.length() < 3 || !libFile.substring(0, 2).equals("-L")) {
-					System.err.println("Error: second argument is of the wrong format.");
+				if (libFile.length() < 3
+						|| !libFile.substring(0, 2).equals("-L")) {
+					System.err
+							.println("Error: second argument is of the wrong format.");
+					return;
 				}
-				libFile = libFile.substring(2); // skip the -L part of the string
+				libFile = libFile.substring(2); // skip the -L part
 			}
-			
-			FileReader libReader = new FileReader(libFile);
-		    libParser libps = new libParser(new Lexer(libReader));
-			Symbol libSym = libps.parse();
-			ASTNode libRoot = (ASTNode) libSym.value;
-			//Visitor libVisitor = new PrettyPrinter(libFile);
-			//System.out.println(libRoot.accept(libVisitor));
-			
-			FileReader txtFile = new FileReader(args[0]);
-		    parser ps = new parser(new Lexer(txtFile));
-			Symbol mySym = ps.parse();
-			ASTNode rootNode = (ASTNode) mySym.value;
-			Visitor v = new PrettyPrinter(args[0]);
-			System.out.println("Parsed " + args[0] + " successfully!");
-			System.out.println(rootNode.accept(v));
 
-//		    tokens = LexFile(args[0]);
+			ASTNode libRoot = getLibraryAST(libFile, false);
+			ASTNode rootNode = getLibraryAST(args[0]);
+			
 		} catch (Exception e) {
-			if (e instanceof LexicalError) {
-				PrintTokenError(e.getMessage());
-				return;
+			if (e instanceof CompilerError) {
+				CompilerError ce = (CompilerError) e;
+				System.err.println(ce.getLine() + ":" + ce.getColumn() + " : "
+						+ ce.toString());
+			} else {
+				throw new RuntimeException("IO Error (brutal exit)"
+						+ e.toString());
 			}
-			throw new RuntimeException("IO Error (brutal exit)" + e.toString());
+			return;
 		}
 	}
+
+	// #############################################
+	// ############### Functions From PA2 ###############
+	// #############################################
+
+	public static ASTNode getLibraryAST(String libFile, boolean printAST)
+			throws Exception {
+		FileReader libReader = new FileReader(libFile);
+		libParser libps = new libParser(new Lexer(libReader));
+		Symbol libSym = libps.parse();
+		ASTNode libRoot = (ASTNode) libSym.value;
+		if (printAST) {
+			Visitor libVisitor = new PrettyPrinter(libFile);
+			System.out.println(libRoot.accept(libVisitor));
+		}
+		return libRoot;
+	}
+
+	public static ASTNode getLibraryAST(String icFile) throws Exception {
+		FileReader txtFile = new FileReader(icFile);
+		parser ps = new parser(new Lexer(txtFile));
+		Symbol mySym = ps.parse();
+		ASTNode rootNode = (ASTNode) mySym.value;
+		Visitor v = new PrettyPrinter(icFile);
+		System.out.println("Parsed " + icFile + " successfully!");
+		System.out.println(rootNode.accept(v));
+		return rootNode;
+	}
+
+	// #############################################
+	// ############### Functions From PA1 ###############
+	// #############################################
 
 	public static List<Token> LexFile(String file) throws LexicalError,
 			Exception {

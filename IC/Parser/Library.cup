@@ -50,7 +50,7 @@ parser code  {:
 /////			Terminals			/////
 
 // general
-terminal Integer 	NUM;
+terminal String 	NUM;
 terminal String  	ID;
 terminal String 	CLASS_ID;
 terminal String 	STR; // an actual string like "Nice"
@@ -89,7 +89,10 @@ nonterminal List<Formal> formals; // list can't be empty
 
 libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
 		{: 
-			if(!c.equals("Library")) throw new Exception("Lexical error: class name must be Library");
+			if(!c.equals("Library")) {
+				String errMsg = "expected 'Library', buf found '" + c + "'";
+				throw new SyntaxError(errMsg,cleft,cright);
+			}
 			RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); 
 		:}
 ;

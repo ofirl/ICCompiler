@@ -1,10 +1,10 @@
 /* 
 */
 
-class Library { awc
-    void println(string s) {}
+class CLibrary {
+    void println(ast string s) {}
     void print(string s) {}
-    void printi(int i) {}
+    void printi(int i) { + }
     int stoi(string s, int i) {}
    int random(int n) {}
    void exit(int n) {}

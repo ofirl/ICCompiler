@@ -185,7 +185,10 @@ class CUP$libParser$actions {
 		int lstright = ((java_cup.runtime.Symbol)CUP$libParser$stack.elementAt(CUP$libParser$top-1)).right;
 		List<Method> lst = (List<Method>)((java_cup.runtime.Symbol) CUP$libParser$stack.elementAt(CUP$libParser$top-1)).value;
 		 
-			if(!c.equals("Library")) throw new LexicalError("Lexical error: class name must be Library",cleft,cright);
+			if(!c.equals("Library")) {
+				String errMsg = "expected 'Library', buf found '" + c + "'";
+				throw new SyntaxError(errMsg,cleft,cright);
+			}
 			RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); 
 		
               CUP$libParser$result = parser.getSymbolFactory().newSymbol("libic",0, ((java_cup.runtime.Symbol)CUP$libParser$stack.elementAt(CUP$libParser$top-4)), ((java_cup.runtime.Symbol)CUP$libParser$stack.peek()), RESULT);

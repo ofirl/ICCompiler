@@ -141,10 +141,10 @@ import java_cup.runtime.*;
 	}
 	
 	/* error fallback */
-	{NotIdentifier} { lexError("Lexical error: " + yytext()); }
-//	{NotString} { lexError("Lexical error: " + yytext()); }
-	{UnterminatedComment} { lexError("Lexical error: " + yytext()); }
-	{ NotInteger } { lexError("Lexical error: " + yytext()); }
-	[^] { lexError("Lexical error: " + yytext()); }  // invalid character
+	{NotIdentifier} { lexError(yytext()); }
+//	{NotString} { lexError(yytext()); }
+	{UnterminatedComment} { lexError(yytext()); }
+	{ NotInteger } { lexError(yytext()); }
+	[^] { lexError(yytext()); }  // invalid character
 	
 	
