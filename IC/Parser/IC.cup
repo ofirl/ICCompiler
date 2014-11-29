@@ -150,6 +150,7 @@ nonterminal Expression expr_op;
 nonterminal Literal literal;
 nonterminal Expression optionalReturnValue;
 nonterminal Statement optionalElse;
+nonterminal Statement limited_stmt;
 
 //////////////////////////
 // Precedence declarations
@@ -273,9 +274,9 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = c ; :}
 		| RETURN:i optionalReturnValue:or SEMI
 		{: RESULT = new Return(ileft,or); :}
-		| IF LP expr:cond RP stmt:s optionalElse:e
+		| IF LP expr:cond RP limited_stmt:s optionalElse:e
 		{: RESULT = new If(cond,s,e); :}
-		| WHILE LP expr:cond RP stmt:s
+		| WHILE LP expr:cond RP limited_stmt:s
 		{: RESULT = new While(cond,s) ; :}
 		| BREAK:i SEMI
 		{: RESULT = new Break(ileft) ; :}
@@ -285,7 +286,25 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = new StatementsBlock(ileft,sl); :}
 ;
 
-optionalElse ::= ELSE stmt:s
+limited_stmt ::= location:l EQ expr:e SEMI
+				{: RESULT = new Assignment(l,e); :}
+				| callStatement:c SEMI
+				{: RESULT = c ; :}
+				| RETURN:i optionalReturnValue:or SEMI
+				{: RESULT = new Return(ileft,or); :}
+				| IF LP expr:cond RP limited_stmt:s optionalElse:e
+				{: RESULT = new If(cond,s,e); :}
+				| WHILE LP expr:cond RP limited_stmt:s
+				{: RESULT = new While(cond,s) ; :}
+				| BREAK:i SEMI
+				{: RESULT = new Break(ileft) ; :}
+				| CONTINUE:i SEMI
+				{: RESULT = new Continue(ileft); :}
+				| LCBR:i stmt_list:sl RCBR
+				{: RESULT = new StatementsBlock(ileft,sl); :}
+;
+
+optionalElse ::= ELSE limited_stmt:s
 		{: RESULT = s ; :}
 		| // epsilon
 		{: RESULT = null ; :}
