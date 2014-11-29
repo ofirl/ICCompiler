@@ -1,0 +1,24 @@
+class Here_we_are extends We_wereThere
+{
+	int[] i;
+	
+	static void func1(A a, Array[] ar)
+	{
+		return;
+		break 	/* TODO :never used. should be deleted */ ; 
+		
+	}	
+
+	string s;
+	boolean b, b2, b3 ; // remarks
+	boolean[] ba;
+	
+	boolean func2()
+	{}
+}
+
+
+class We_wereThere
+{
+
+}
