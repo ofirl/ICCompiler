@@ -59,6 +59,8 @@ parser code  {:
 		Token tok = (Token) s;
 		StringBuffer sb = new StringBuffer();
 		
+		java.util.Collections.sort(list);
+		
 		if (!sortedlst.isEmpty()) {
 			boolean firstStr = true;
 			for (String str : sortedlst) {

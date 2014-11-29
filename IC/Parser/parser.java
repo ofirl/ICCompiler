@@ -618,6 +618,8 @@ public class parser extends java_cup.runtime.lr_parser {
 		Token tok = (Token) s;
 		StringBuffer sb = new StringBuffer();
 		
+		java.util.Collections.sort(sortedlst);
+		
 		if (!sortedlst.isEmpty()) {
 			boolean firstStr = true;
 			for (String str : sortedlst) {
