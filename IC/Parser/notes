@@ -1,0 +1,20 @@
+JFlex manual : http://jflex.de/manual.pdf - 
+	the first example is good starting point for us.
+	
+note : 
+currently the cup optimization makes an error at the end of file,
+because we are returning a Token and not a Symbol, possible fixes :
+1. return a symbol (against what the power point presentation says) 
+	and convert the symbol to token in our code.
+2. find how to override the default behavior for the EOF.
+
+in the mean time : (i'll fix it tomorrow, but if you want to run it)
+if you compile the .lex file with JFlex (put the Lexer.java file in same folder),
+it will throw an error in the EOF function, switch the "return new Symbol(...);" with :
+"return new Token(sym.EOF, "EOF", 0 , 0);"
+
+To Do list :
+1. check what other tags are needed.
+2. fix error handling
+3. Handle EOF (should it be printed ?).
+4. Get rid of Colon ?

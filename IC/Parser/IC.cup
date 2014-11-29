@@ -1,0 +1,384 @@
+package IC.Parser;
+
+import IC.AST.*;
+import IC.*;
+import java_cup.runtime.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+
+parser code  {:
+	/** Causes the parser to print every token it reads.
+	 * This is useful for debugging.
+	 */
+//	public boolean printTokens = true;
+	
+	private Lexer lexer;
+	private List<String> sortedlst = new LinkedList<String>();
+
+	public parser(Lexer lexer) {
+		super(lexer);
+		this.lexer = lexer;
+	}
+	
+	// we can use it to get the line number of current token
+	public int getLine() {
+		return lexer.getLineNumber();
+	}
+	
+	// we can use it to get the column number of current token
+	public int getColumn() {
+		return lexer.getColumnNumber();
+	}
+	
+	public static String parseString(String str) {
+		StringBuffer sb = new StringBuffer();
+		boolean writeChar = false;
+		int n = str.length();
+		for (int j = 1; j <= n - 2; j++) {
+			char c = str.charAt(j);
+			if (writeChar) {
+				if (c == 'n')
+					sb.append("\n");
+				else if (c == 't')
+					sb.append("\t");
+				else
+					sb.append(c);
+				
+				writeChar = false;
+			} else if (c != '\\') {
+				sb.append(c);
+			} else { // else str.charAt(j) == '\\'
+				writeChar = true;
+			}
+		}
+		return sb.toString();
+	}
+	
+	public void unrecovered_syntax_error(Symbol s) throws SyntaxError {
+		Token tok = (Token) s;
+		StringBuffer sb = new StringBuffer();
+		
+		if (!sortedlst.isEmpty()) {
+			boolean firstStr = true;
+			for (String str : sortedlst) {
+				if (firstStr) {
+					firstStr = false;
+					sb.append("'" + Token.convertTag(str) + "'");
+				} else {
+					sb.append(" or '" + Token.convertTag(str) + "'");
+				}
+			}
+		}
+		String errMsg = "expected " + sb.toString() + ", but found '" + tok.getValue() + "'";
+		throw new SyntaxError(errMsg,tok.getLine(),tok.getColumn());
+	}
+	
+	public void syntax_error(Symbol s) {
+		List<Integer> expectedTags = expected_token_ids();
+		for (Integer n : expectedTags)
+			sortedlst.add(sym.terminalNames[n]);
+		
+		// sort sortedlst lexicographically
+	}
+:}
+
+// This is just for debugging
+//scan with {:
+//	Token t = lexer.next_token();
+//	if (printTokens)
+//		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
+//	return t; 
+//:};
+
+////////////////////////////////////////////
+// Symbol list (terminals and non-terminals)
+
+/////			Terminals			/////
+
+// general
+terminal String 	NUM;
+terminal String  	ID;
+terminal String 	CLASS_ID;
+terminal String 	STR; // an actual string like "Nice"
+
+// operators
+terminal PLUS, MINUS, MULTIPLY, DIVIDE, NEGATION, REMAINDER, BIG, BIGEQ;
+terminal SMALL, SMALLEQ, EQ, EQCOMP, AND, OR, DOT, NOTEQCOMP;
+
+// punctuation
+terminal LP, RP, LB, RB, LCBR, RCBR, SEMI, COMMA;
+
+// keywords
+terminal CLASS, EXTENDS, STATIC, VOID, BOOLEAN, RETURN, IF, ELSE, WHILE;
+terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
+terminal INT; // the keyword int
+terminal STRING; // the keyword string
+
+// unreal terminals
+terminal UMINUS, LNEG;
+
+/////			Non-Terminals			/////
+
+nonterminal Program program;
+nonterminal List<ICClass> class_list;
+nonterminal ICClass classDecl;
+nonterminal String optionalExtends;
+nonterminal FieldsOrMethods fieldsnmethods;
+nonterminal List<Field> fields;
+nonterminal List<String> optionalFields;
+nonterminal Method method;
+nonterminal Type type;
+nonterminal Type typenvoid;
+nonterminal Type virtualvoid;
+nonterminal List<Formal> formalsList;
+nonterminal List<Formal> formals;
+
+// statements related
+nonterminal List<Statement> stmt_list;
+nonterminal Statement stmt;
+nonterminal Expression expr;
+nonterminal Location location;
+nonterminal CallStatement callStatement;
+nonterminal Call call;
+nonterminal StaticCall staticCall;
+nonterminal VirtualCall virtualCall;
+nonterminal List<Expression> expr_args;
+nonterminal List<Expression> expr_comma;
+nonterminal Expression expr_op;
+
+nonterminal Literal literal;
+nonterminal Expression optionalReturnValue;
+nonterminal Statement optionalElse;
+
+//////////////////////////
+// Precedence declarations
+
+precedence right EQ;
+precedence left OR;
+precedence left AND;
+precedence left EQCOMP, NOTEQCOMP;
+precedence left SMALL, SMALLEQ, BIG, BIGEQ;
+precedence left PLUS, MINUS;
+precedence left MULTIPLY, DIVIDE, REMAINDER;
+precedence right UMINUS, LNEG;
+precedence left DOT, LB, RB, LP, RP;
+precedence left ELSE;
+
+//////////////
+// The grammar
+
+program ::= class_list:cl
+     {: RESULT = new Program(cl); :}
+;
+
+class_list ::= class_list:cl classDecl:c
+      {: cl.add(c); RESULT = cl; :}
+      | // epsilon
+      {: RESULT = new LinkedList<ICClass>(); :}
+;
+
+classDecl ::= CLASS CLASS_ID:c optionalExtends:ext LCBR fieldsnmethods:x RCBR
+		{:
+			if(ext != null)
+				RESULT = new ICClass(cleft, c, ext, x.getFields(), x.getMethods());
+			else
+				RESULT = new ICClass(cleft, c, x.getFields(), x.getMethods());
+		:}
+;
+
+optionalExtends ::= EXTENDS CLASS_ID:c
+				{: RESULT = c; :}
+				| // epsilon
+				{: RESULT = null; :}
+;
+
+fieldsnmethods ::= fieldsnmethods:lst fields:c
+					{: lst.add(c); RESULT = lst; :}
+					| fieldsnmethods:lst method:c
+					{: lst.add(c); RESULT = lst; :}
+					| // epsilon
+					{: RESULT = new FieldsOrMethods(); :}
+;
+
+fields ::= type:t ID:i optionalFields:f SEMI
+		{:
+			f.add(0,i);
+			RESULT = new LinkedList<Field>();
+			for (String s : f)
+				RESULT.add(new Field(t,s));;
+		:}
+;
+
+optionalFields ::= optionalFields:f COMMA ID:i
+				{: f.add(i); RESULT = f; :}
+				| // epsilon
+				{: RESULT = new LinkedList<String>(); :}
+;
+
+method ::= STATIC typenvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new StaticMethod(t,i,f,s); :}
+			| type:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new VirtualMethod(t,i,f,s); :}
+			| virtualvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
+			{: RESULT = new VirtualMethod(t,i,f,s); :}
+;
+
+virtualvoid ::= VOID:v
+			{: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :} // can use vleft ...
+;
+
+typenvoid ::= VOID:v {: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :}
+			| type:t {: RESULT = t; :}
+;
+
+type ::= INT:n
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.INT); :} // can use nleft instead of getLine()
+		| BOOLEAN:b
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.BOOLEAN); :} // can use bleft instead of getLine()
+		| STRING:s
+		{: RESULT = new PrimitiveType(getLine(),DataTypes.STRING); :} // can use sleft instead of getLine()
+		| CLASS_ID:c
+		{: RESULT = new UserType(getLine(),c); :} // can use cleft instead of getLine()
+		| type:t LB RB
+		{: t.incrementDimension(); RESULT = t; :}
+;
+
+formalsList ::= formals:f
+			{: RESULT = f; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Formal>(); :}
+;
+
+formals ::= type:t ID:i
+			{: RESULT = new LinkedList<Formal>(); RESULT.add(new Formal(t,i)); :}
+			| formals:f COMMA type:t ID:i
+			{: f.add(new Formal(t,i)); RESULT = f; :}
+;
+
+// statements related
+stmt_list ::= stmt_list:lst stmt:s
+		{: lst.add(s); RESULT = lst; :}
+		| // epsilon
+		{: RESULT = new LinkedList<Statement>(); :}
+;
+
+stmt ::= type:t ID:i SEMI
+		{: RESULT = new LocalVariable(t,i); :}
+		| type:t ID:i EQ expr:e SEMI
+		{: RESULT = new LocalVariable(t,i,e); :}
+		| location:l EQ expr:e SEMI
+		{: RESULT = new Assignment(l,e); :}
+		| callStatement:c SEMI
+		{: RESULT = c ; :}
+		| RETURN:i optionalReturnValue:or SEMI
+		{: RESULT = new Return(ileft,or); :}
+		| IF LP expr:cond RP stmt:s optionalElse:e
+		{: RESULT = new If(cond,s,e); :}
+		| WHILE LP expr:cond RP stmt:s
+		{: RESULT = new While(cond,s) ; :}
+		| BREAK:i SEMI
+		{: RESULT = new Break(ileft) ; :}
+		| CONTINUE:i SEMI
+		{: RESULT = new Continue(ileft); :}
+		| LCBR:i stmt_list:sl RCBR
+		{: RESULT = new StatementsBlock(ileft,sl); :}
+;
+
+optionalElse ::= ELSE stmt:s
+		{: RESULT = s ; :}
+		| // epsilon
+		{: RESULT = null ; :}
+;
+
+optionalReturnValue ::= expr:e
+		{: RESULT = e ; :}
+		| // epsilon
+		{: RESULT = null ; :}
+;
+
+expr ::= location:l {: RESULT = l; :}
+		| call:c {: RESULT = c; :}
+		| THIS:t {: RESULT = new This(tleft); :}
+		| NEW CLASS_ID:c LP RP {: RESULT = new NewClass(cleft,c); :}
+		| NEW type:t LB expr:e RB {: RESULT = new NewArray(t,e); :}
+		| expr:e DOT LENGTH {: RESULT = new Length(e); :}
+		| expr_op:e {: RESULT = e; :}
+		| literal:l {: RESULT = l; :}
+		| LP expr:e RP {: RESULT = new ExpressionBlock(e); :}
+;
+
+location ::= ID:i {: RESULT = new VariableLocation(ileft,i); :}
+			| expr:e DOT ID:i
+			{: RESULT = new VariableLocation(ileft,e,i); :}
+			| expr:e1 LB expr:e2 RB
+			{: RESULT = new ArrayLocation(e1,e2); :}
+;
+
+callStatement ::= call:c {: RESULT = new CallStatement(c); :}
+;
+
+call ::= staticCall:s {: RESULT = s; :}
+		| virtualCall:v {: RESULT = v; :}
+;
+
+staticCall ::= CLASS_ID:c DOT ID:i LP expr_args:args RP
+			{: RESULT = new StaticCall(ileft,c,i,args); :}
+;
+
+virtualCall ::= expr:e DOT ID:i LP expr_args:args RP
+			{: RESULT = new VirtualCall(ileft,e,i,args); :}
+			| ID:i LP expr_args:args RP
+			{: RESULT = new VirtualCall(ileft,i,args); :}
+;
+
+expr_args ::= expr:e expr_comma:lst
+			{: lst.add(0, e); RESULT = lst; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Expression>(); :}
+;
+
+expr_comma ::= expr_comma:lst COMMA expr:e
+			{: lst.add(e); RESULT = lst; :}
+			| // epsilon
+			{: RESULT = new LinkedList<Expression>(); :}
+;
+
+expr_op ::= expr:e1 PLUS expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.PLUS, e2); :}
+			| expr:e1 MINUS expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MINUS, e2); :}
+			| expr:e1 MULTIPLY expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MULTIPLY, e2); :}
+			| expr:e1 DIVIDE expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.DIVIDE, e2); :}
+			| expr:e1 REMAINDER expr:e2
+			{: RESULT = new MathBinaryOp(e1, BinaryOps.MOD, e2); :}
+			| expr:e1 AND expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LAND, e2); :}
+			| expr:e1 OR expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LOR, e2); :}
+			| expr:e1 SMALL expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LT, e2); :}
+			| expr:e1 SMALLEQ expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LTE, e2); :}
+			| expr:e1 BIG expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.GT, e2); :}
+			| expr:e1 BIGEQ expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.GTE, e2); :}
+			| expr:e1 EQCOMP expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.EQUAL, e2); :}
+			| expr:e1 NOTEQCOMP expr:e2
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.NEQUAL, e2); :}
+			| NEGATION expr:e
+			{: RESULT = new LogicalUnaryOp(UnaryOps.LNEG, e); :} %prec LNEG
+			| MINUS expr:e
+			{: RESULT = new MathUnaryOp(UnaryOps.UMINUS, e); :} %prec UMINUS
+;
+
+literal ::= NUM:n {: RESULT = new Literal(nleft, LiteralTypes.INTEGER, n); :}
+			| STR:s {: RESULT = new Literal(sleft, LiteralTypes.STRING, parseString(s)); :}
+			| TRUE:t {: RESULT = new Literal(tleft, LiteralTypes.TRUE); :}
+			| FALSE:f {: RESULT = new Literal(fleft, LiteralTypes.FALSE); :}
+			| NULL:n {: RESULT = new Literal(nleft, LiteralTypes.NULL); :}
+;
