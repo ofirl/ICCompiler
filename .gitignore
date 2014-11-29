@@ -27,7 +27,4 @@
 *.i*86
 *.x86_64
 *.hex
-/bin/
-Lexer.java
-parser.java
-sym.java
+/bin1/
