@@ -8,9 +8,12 @@ package IC.Parser;
 import IC.AST.*;
 import IC.*;
 import java_cup.runtime.*;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
+
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20140808 (SVN rev 54) generated parser.
@@ -618,7 +621,7 @@ public class parser extends java_cup.runtime.lr_parser {
 		Token tok = (Token) s;
 		StringBuffer sb = new StringBuffer();
 		
-		java.util.Collections.sort(sortedlst);
+		Collections.sort(sortedlst);
 		
 		if (!sortedlst.isEmpty()) {
 			boolean firstStr = true;

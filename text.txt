@@ -2,7 +2,7 @@
 */
 
 class CLibrary {
-    void println(ast string s) {}
+    void println(string s) {}
     void print(string s) {}
     void printi(int i) { + }
     int stoi(string s, int i) {}
