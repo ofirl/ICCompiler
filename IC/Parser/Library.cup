@@ -11,11 +11,11 @@ parser code  {:
 	/** Causes the parser to print every token it reads.
 	 * This is useful for debugging.
 	 */
-	public boolean printTokens = true;
+//	public boolean printTokens = true;
 	
 	private Lexer lexer;
 
-	public parser(Lexer lexer) {
+	public libParser(Lexer lexer) {
 		super(lexer);
 		this.lexer = lexer;
 	}
@@ -37,12 +37,12 @@ parser code  {:
 :}
 
 // This is just for debugging
-scan with {:
-	Token t = lexer.next_token();
-	if (printTokens)
-		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
-	return t; 
-:};
+//scan with {:
+//	Token t = lexer.next_token();
+//	if (printTokens)
+//		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
+//	return t; 
+//:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
@@ -68,6 +68,9 @@ terminal BREAK, CONTINUE, THIS, NEW, LENGTH, TRUE, FALSE, NULL;
 terminal INT; // the keyword int
 terminal STRING; // the keyword string
 
+// unreal terminals
+terminal UMINUS, LNEG;
+
 /////			Non-Terminals			/////
 
 nonterminal ICClass libic;
@@ -86,7 +89,7 @@ nonterminal List<Formal> formals; // list can't be empty
 
 libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
 		{: 
-			if(!c.equals("Library")) throw new Exception("Stupid error: class name must be Library!");
+			if(!c.equals("Library")) throw new Exception("Lexical error: class name must be Library");
 			RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); 
 		:}
 ;

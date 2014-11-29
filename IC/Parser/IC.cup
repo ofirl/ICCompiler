@@ -11,7 +11,7 @@ parser code  {:
 	/** Causes the parser to print every token it reads.
 	 * This is useful for debugging.
 	 */
-	public boolean printTokens = true;
+//	public boolean printTokens = true;
 	
 	private Lexer lexer;
 
@@ -30,19 +30,44 @@ parser code  {:
 		return lexer.getColumnNumber();
 	}
 	
+	public static String parseString(String str) {
+		StringBuffer sb = new StringBuffer();
+		boolean writeChar = false;
+		int n = str.length();
+		for (int j = 1; j <= n - 2; j++) {
+			char c = str.charAt(j);
+			if (writeChar) {
+				if (c == 'n')
+					sb.append("\n");
+				else if (c == 't')
+					sb.append("\t");
+				else
+					sb.append(c);
+				
+				writeChar = false;
+			} else if (c != '\\') {
+				sb.append(c);
+			} else { // else str.charAt(j) == '\\'
+				writeChar = true;
+			}
+		}
+		return sb.toString();
+	}
+	
 	public void syntax_error(Symbol s) {
 		Token tok = (Token) s;
+		// List<Integer> c = expected_token_ids();
 		System.out.println("Line " + tok.getLine()+": Syntax error; unexpected " + tok);
 	}
 :}
 
 // This is just for debugging
-scan with {:
-	Token t = lexer.next_token();
-	if (printTokens)
-		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
-	return t; 
-:};
+//scan with {:
+//	Token t = lexer.next_token();
+//	if (printTokens)
+//		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
+//	return t; 
+//:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
@@ -100,13 +125,14 @@ nonterminal List<Expression> expr_args;
 nonterminal List<Expression> expr_comma;
 nonterminal Expression expr_op;
 
-
 nonterminal Literal literal;
 nonterminal Expression optionalReturnValue;
 nonterminal Statement optionalElse;
+
 //////////////////////////
 // Precedence declarations
 
+precedence right EQ;
 precedence left OR;
 precedence left AND;
 precedence left EQCOMP, NOTEQCOMP;
@@ -114,6 +140,7 @@ precedence left SMALL, SMALLEQ, BIG, BIGEQ;
 precedence left PLUS, MINUS;
 precedence left MULTIPLY, DIVIDE, REMAINDER;
 precedence right UMINUS, LNEG;
+precedence left DOT, LB, RB, LP, RP;
 precedence left ELSE;
 
 //////////////
@@ -218,20 +245,22 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = new LocalVariable(t,i); :}
 		| type:t ID:i EQ expr:e SEMI
 		{: RESULT = new LocalVariable(t,i,e); :}
+		| location:l EQ expr:e SEMI
+		{: RESULT = new Assignment(l,e); :}
 		| callStatement:c SEMI
 		{: RESULT = c ; :}
-		| RETURN optionalReturnValue:or SEMI
-		{: RESULT = new Return(getLine(),or); :}
+		| RETURN:i optionalReturnValue:or SEMI
+		{: RESULT = new Return(ileft,or); :}
 		| IF LP expr:cond RP stmt:s optionalElse:e
 		{: RESULT = new If(cond,s,e); :}
 		| WHILE LP expr:cond RP stmt:s
 		{: RESULT = new While(cond,s) ; :}
-		| BREAK SEMI
-		{: RESULT = new Break(getLine()) ; :}
-		| CONTINUE SEMI
-		{: RESULT = new Continue(getLine()); :}
-		| LCBR stmt_list:sl RCBR
-		{: RESULT = new StatementsBlock(getLine(),sl); :}
+		| BREAK:i SEMI
+		{: RESULT = new Break(ileft) ; :}
+		| CONTINUE:i SEMI
+		{: RESULT = new Continue(ileft); :}
+		| LCBR:i stmt_list:sl RCBR
+		{: RESULT = new StatementsBlock(ileft,sl); :}
 ;
 
 optionalElse ::= ELSE stmt:s
@@ -254,6 +283,7 @@ expr ::= location:l {: RESULT = l; :}
 		| expr:e DOT LENGTH {: RESULT = new Length(e); :}
 		| expr_op:e {: RESULT = e; :}
 		| literal:l {: RESULT = l; :}
+		| LP expr:e RP {: RESULT = new ExpressionBlock(e); :}
 ;
 
 location ::= ID:i {: RESULT = new VariableLocation(ileft,i); :}
@@ -303,29 +333,29 @@ expr_op ::= expr:e1 PLUS expr:e2
 			| expr:e1 REMAINDER expr:e2
 			{: RESULT = new MathBinaryOp(e1, BinaryOps.MOD, e2); :}
 			| expr:e1 AND expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.LAND, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LAND, e2); :}
 			| expr:e1 OR expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.LOR, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LOR, e2); :}
 			| expr:e1 SMALL expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.LT, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LT, e2); :}
 			| expr:e1 SMALLEQ expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.LTE, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.LTE, e2); :}
 			| expr:e1 BIG expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.GT, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.GT, e2); :}
 			| expr:e1 BIGEQ expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.GTE, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.GTE, e2); :}
 			| expr:e1 EQCOMP expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.EQUAL, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.EQUAL, e2); :}
 			| expr:e1 NOTEQCOMP expr:e2
-			{: RESULT = new MathBinaryOp(e1, BinaryOps.NEQUAL, e2); :}
+			{: RESULT = new LogicalBinaryOp(e1, BinaryOps.NEQUAL, e2); :}
 			| NEGATION expr:e
-			{: RESULT = new MathUnaryOp(UnaryOps.LNEG, e); :} %prec LNEG
+			{: RESULT = new LogicalUnaryOp(UnaryOps.LNEG, e); :} %prec LNEG
 			| MINUS expr:e
 			{: RESULT = new MathUnaryOp(UnaryOps.UMINUS, e); :} %prec UMINUS
 ;
 
 literal ::= NUM:n {: RESULT = new Literal(nleft, LiteralTypes.INTEGER, n); :}
-			| STR:s {: RESULT = new Literal(sleft, LiteralTypes.STRING, s); :} // not done here yet
+			| STR:s {: RESULT = new Literal(sleft, LiteralTypes.STRING, parseString(s)); :}
 			| TRUE:t {: RESULT = new Literal(tleft, LiteralTypes.TRUE); :}
 			| FALSE:f {: RESULT = new Literal(fleft, LiteralTypes.FALSE); :}
 			| NULL:n {: RESULT = new Literal(nleft, LiteralTypes.NULL); :}

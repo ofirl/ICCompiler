@@ -11,6 +11,7 @@ public class sym {
   public static final int DIVIDE = 9;
   public static final int LCBR = 26;
   public static final int STR = 5;
+  public static final int UMINUS = 49;
   public static final int CONTINUE = 40;
   public static final int SEMI = 28;
   public static final int SMALLEQ = 15;
@@ -55,6 +56,7 @@ public class sym {
   public static final int EXTENDS = 31;
   public static final int REMAINDER = 11;
   public static final int STRING = 48;
+  public static final int LNEG = 50;
   public static final int FALSE = 45;
   public static final int LENGTH = 43;
   public static final String[] terminalNames = new String[] {
@@ -106,7 +108,9 @@ public class sym {
   "FALSE",
   "NULL",
   "INT",
-  "STRING"
+  "STRING",
+  "UMINUS",
+  "LNEG"
   };
 }
 

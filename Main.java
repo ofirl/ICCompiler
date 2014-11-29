@@ -10,15 +10,32 @@ public class Main {
 
 	public static void main(String[] args) {
 //		List<Token> tokens = new LinkedList<Token>();
-
+		
 		try {
 
+			String libFile = "libic.sig";
+			if (args.length > 1) {
+				libFile = args[1];
+				if (libFile.length() < 3 || !libFile.substring(0, 2).equals("-L")) {
+					System.err.println("Error: second argument is of the wrong format.");
+				}
+				libFile = libFile.substring(2); // skip the -L part of the string
+			}
+			
+			FileReader libReader = new FileReader(libFile);
+		    libParser libps = new libParser(new Lexer(libReader));
+			Symbol libSym = libps.parse();
+			ASTNode libRoot = (ASTNode) libSym.value;
+			//Visitor libVisitor = new PrettyPrinter(libFile);
+			//System.out.println(libRoot.accept(libVisitor));
+			
 			FileReader txtFile = new FileReader(args[0]);
 		    parser ps = new parser(new Lexer(txtFile));
 			Symbol mySym = ps.parse();
-			ASTNode c = (ASTNode) mySym.value;
-			Visitor v = new PrettyPrinter("ICFilePath"); // we need to change this string
-			System.out.println(c.accept(v));
+			ASTNode rootNode = (ASTNode) mySym.value;
+			Visitor v = new PrettyPrinter(args[0]);
+			System.out.println("Parsed " + args[0] + " successfully!");
+			System.out.println(rootNode.accept(v));
 
 //		    tokens = LexFile(args[0]);
 		} catch (Exception e) {
