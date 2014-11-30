@@ -9,7 +9,7 @@ class Here_we_are extends We_wereThere
 		a = 		C.ba() ;
 		a = 		mmda.awdawd(dawdaw,awdaw) ;
 		a = 		this ;
-		a = 		new A(awd) ;
+		a = 		new A() ;
 		a = 		new boolean[a+4] ;
 		a = 		new int[new A()] ;
 		a = 		new string[100] ;

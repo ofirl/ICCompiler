@@ -18,7 +18,7 @@ class Here_we_are extends We_wereThere
 
 		if (a+4) a = 4;
 		if(a+4) a = 5; else a=6;
-		if(a+4) if(a-b) else break; else if (  b - 8 ) return; else return 4;
+		if(a+4) if(a-b) a= 2; else break; else if (  b - 8 ) return; else return 4;
 
 		if(true)
 		{
