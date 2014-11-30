@@ -1,0 +1,8 @@
+class Here_we_are extends We_wereThere
+{
+	int[] func1(int arg1, boolean arg2)
+	{
+		FuncClass.func1(,);
+	}
+}
+

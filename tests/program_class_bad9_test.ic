@@ -1,0 +1,19 @@
+class Here_we_are extends class We_wereThere
+{
+	int[] i;
+	
+	static void func1(A a, Array[] ar)
+	{
+		break;
+		return;	
+	}	
+
+	string s;
+	boolean b, b2, b3 ;
+	boolean[] ba;
+	
+	boolean func2()
+	{}
+
+
+}
