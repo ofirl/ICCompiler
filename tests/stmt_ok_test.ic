@@ -1,0 +1,68 @@
+class Here_we_are extends We_wereThere
+{
+	int[] func1(int arg1, boolean arg2)
+	{
+		a = 4;
+		(a*2).blabla = 4;
+		(a*b)[4+a] = 4;
+
+		(a+b).method1(a,b);
+		4.method2();
+
+		A.static1();
+		B.static2(a,b,c+a);
+
+		return;
+
+		return A.static1();
+
+		if (a+4) a = 4;
+		if(a+4) a = 5; else a=6;
+		if(a+4) if(a-b) a= 2; else break; else if (  b - 8 ) return; else return 4;
+
+		if(true)
+		{
+			continue;
+			break;
+			return;
+			if(false)
+
+				a = 10;
+
+		}
+		else
+		{
+			if(true) if(true) if(true) break; else return;
+
+		}
+
+
+
+		if(true)
+		while(false)
+		a = true;
+		else
+		b = true;
+
+		while(a < b)
+		{
+		while(false)
+			n = true == false;
+		}
+
+		{{{{{{{{{{{{{{{{
+		break;
+		}}}}}}}}}}}}}}}}
+
+		{{{{{{{{{{{{{
+
+			boolean b = true==false;
+
+		}}}}}}}}}}}}}
+
+
+		{{int k;{{{int i = 4;{{{{{{break;}}}}}}}}int j = 5;}}}
+
+	}
+}
+

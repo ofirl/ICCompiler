@@ -1,0 +1,39 @@
+class Here_we_are extends We_wereThere
+{
+	int[] func1(int arg1, boolean arg2)
+	{
+		a = 		class ;
+		a = 		a() ;
+		a = 		C.ba() ;
+		a = 		mmda.awdawd(dawdaw,awdaw) ;
+		a = 		this ;
+		a = 		new A(awd) ;
+		a = 		new boolean[a+4] ;
+		a = 		new int[new A()] ;
+		a = 		new string[100] ;
+		a = 		new A[30] ;
+		a = 		new B[][][][10] ;
+		a = 		awidjawijd.length ;
+		a = 		(awlidj - awud == 4).length ;
+		a = 		a + b ;
+		a = 		a - b ;
+		a = 		a * b ;
+		a = 		a / b ;
+		a = 		a % b ;
+		a = 		a && b ;
+		a = 		a || b ;
+		a = 		a < b ;
+		a = 		a <= b ;
+		a = 		a > b ;
+		a = 		a >= b ;
+		a = 		a == b ;
+		a = 		a != b ;
+		a = a + b - c * 19 % 10 * -1;
+		a = !false;
+		a = (1+3) * 20%7;
+		b = null;
+		a = (null * true - 100)-!-2;
+
+	}
+}
+

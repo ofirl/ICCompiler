@@ -4,24 +4,16 @@ class Here_we_are extends We_wereThere
 	
 	static void func1(A a, Array[] ar)
 	{
-		return;
-		break 	/* TODO :never used. should be deleted */ ; 
-		
+		break;
+		return;	
 	}	
 
 	string s;
-	boolean b, b2, b3 ; // remarks
+	boolean b, b2, b3 ;
 	boolean[] ba;
 	
 	boolean func2()
 	{}
 
-	boolean[] func3()
 	{}
-}
-
-
-class We_wereThere
-{
-
 }

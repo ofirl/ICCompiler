@@ -1,0 +1,9 @@
+class Here_we_are extends We_wereThere
+{
+	int[] i;
+	
+	static void int bla()
+		break;
+		return;	
+	}
+}

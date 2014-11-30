@@ -1,0 +1,24 @@
+class Here_we_are extends We_wereThere
+{
+	int i;
+	boolean b;
+	string s;
+	Class c;
+
+	int[][][] ia;
+	boolean[]string[] ba;
+	string[] sa;
+	ClassArray[][][][][][][][] caaaaa;
+
+
+	static int funci(int i) {}
+	static boolean funcb(boolean b) {}
+	static string funcs(string s) {}
+	static Class funcc(Class c) {}
+
+	static int[][][] funcia(int[][][] ia) {}
+	static boolean[] funcba(boolean[] ba) {}
+	static string[] funcsa(string[] sa) {}
+	static ClassArray[][][][][][][][] funccaaaaa(ClassArray[][][][][][][][] caaaaa) {}	
+}
+
