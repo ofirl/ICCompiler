@@ -28,3 +28,6 @@
 *.x86_64
 *.hex
 /bin1/
+parser.java
+sym.java
+Lexer.java
