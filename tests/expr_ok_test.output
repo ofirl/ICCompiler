@@ -1,0 +1,189 @@
+Parsed expr_ok_test.ic successfully!
+
+Abstract Syntax Tree: expr_ok_test.ic
+
+1: Declaration of class: Here_we_are, subclass of We_wereThere
+  3: Declaration of virtual method: func1
+    3: Primitive data type: 1-dimensional array of int
+    3: Parameter: arg1
+     3: Primitive data type: int
+    3: Parameter: arg2
+     3: Primitive data type: boolean
+    5: Assignment statement
+      5: Reference to variable: a
+      5: Reference to variable: a
+    6: Assignment statement
+      6: Reference to variable: a
+      6: Reference to variable: awdaw, in external scope
+       6: Reference to variable: a
+    7: Assignment statement
+      7: Reference to variable: a
+      7: Reference to array
+        7: Reference to variable: a
+        7: Integer literal: 23123
+    8: Assignment statement
+      8: Reference to variable: a
+      8: Call to virtual method: a
+    9: Assignment statement
+      9: Reference to variable: a
+      9: Call to static method: ba, in class C
+    10: Assignment statement
+      10: Reference to variable: a
+      10: Call to virtual method: awdawd, in external scope
+        10: Reference to variable: mmda
+        10: Reference to variable: dawdaw
+        10: Reference to variable: awdaw
+    11: Assignment statement
+      11: Reference to variable: a
+      11: Reference to 'this' instance
+    12: Assignment statement
+      12: Reference to variable: a
+      12: Instantiation of class: A
+    13: Assignment statement
+      13: Reference to variable: a
+      13: Array allocation
+        13: Primitive data type: boolean
+        13: Mathematical binary operation: addition
+          13: Reference to variable: a
+          13: Integer literal: 4
+    14: Assignment statement
+      14: Reference to variable: a
+      14: Array allocation
+        14: Primitive data type: int
+        14: Instantiation of class: A
+    15: Assignment statement
+      15: Reference to variable: a
+      15: Array allocation
+        15: Primitive data type: string
+        15: Integer literal: 100
+    16: Assignment statement
+      16: Reference to variable: a
+      16: Array allocation
+        16: User-defined data type: A
+        16: Integer literal: 30
+    17: Assignment statement
+      17: Reference to variable: a
+      17: Array allocation
+        17: User-defined data type: 3-dimensional array of B
+        17: Integer literal: 10
+    18: Assignment statement
+      18: Reference to variable: a
+      18: Reference to array length
+       18: Reference to variable: awidjawijd
+    19: Assignment statement
+      19: Reference to variable: a
+      19: Reference to array length
+       19: Parenthesized expression
+        19: Logical binary operation: equality
+          19: Mathematical binary operation: subtraction
+            19: Reference to variable: awlidj
+            19: Reference to variable: awud
+          19: Integer literal: 4
+    20: Assignment statement
+      20: Reference to variable: a
+      20: Mathematical binary operation: addition
+        20: Reference to variable: a
+        20: Reference to variable: b
+    21: Assignment statement
+      21: Reference to variable: a
+      21: Mathematical binary operation: subtraction
+        21: Reference to variable: a
+        21: Reference to variable: b
+    22: Assignment statement
+      22: Reference to variable: a
+      22: Mathematical binary operation: multiplication
+        22: Reference to variable: a
+        22: Reference to variable: b
+    23: Assignment statement
+      23: Reference to variable: a
+      23: Mathematical binary operation: division
+        23: Reference to variable: a
+        23: Reference to variable: b
+    24: Assignment statement
+      24: Reference to variable: a
+      24: Mathematical binary operation: modulo
+        24: Reference to variable: a
+        24: Reference to variable: b
+    25: Assignment statement
+      25: Reference to variable: a
+      25: Logical binary operation: logical and
+        25: Reference to variable: a
+        25: Reference to variable: b
+    26: Assignment statement
+      26: Reference to variable: a
+      26: Logical binary operation: logical or
+        26: Reference to variable: a
+        26: Reference to variable: b
+    27: Assignment statement
+      27: Reference to variable: a
+      27: Logical binary operation: less than
+        27: Reference to variable: a
+        27: Reference to variable: b
+    28: Assignment statement
+      28: Reference to variable: a
+      28: Logical binary operation: less than or equal to
+        28: Reference to variable: a
+        28: Reference to variable: b
+    29: Assignment statement
+      29: Reference to variable: a
+      29: Logical binary operation: greater than
+        29: Reference to variable: a
+        29: Reference to variable: b
+    30: Assignment statement
+      30: Reference to variable: a
+      30: Logical binary operation: greater than or equal to
+        30: Reference to variable: a
+        30: Reference to variable: b
+    31: Assignment statement
+      31: Reference to variable: a
+      31: Logical binary operation: equality
+        31: Reference to variable: a
+        31: Reference to variable: b
+    32: Assignment statement
+      32: Reference to variable: a
+      32: Logical binary operation: inequality
+        32: Reference to variable: a
+        32: Reference to variable: b
+    33: Assignment statement
+      33: Reference to variable: a
+      33: Mathematical binary operation: subtraction
+        33: Mathematical binary operation: addition
+          33: Reference to variable: a
+          33: Reference to variable: b
+        33: Mathematical binary operation: multiplication
+          33: Mathematical binary operation: modulo
+            33: Mathematical binary operation: multiplication
+              33: Reference to variable: c
+              33: Integer literal: 19
+            33: Integer literal: 10
+          33: Mathematical unary operation: unary subtraction
+           33: Integer literal: 1
+    34: Assignment statement
+      34: Reference to variable: a
+      34: Logical unary operation: logical negation
+       34: Boolean literal: false
+    35: Assignment statement
+      35: Reference to variable: a
+      35: Mathematical binary operation: modulo
+        35: Mathematical binary operation: multiplication
+          35: Parenthesized expression
+           35: Mathematical binary operation: addition
+             35: Integer literal: 1
+             35: Integer literal: 3
+          35: Integer literal: 20
+        35: Integer literal: 7
+    36: Assignment statement
+      36: Reference to variable: b
+      36: Literal: null
+    37: Assignment statement
+      37: Reference to variable: a
+      37: Mathematical binary operation: subtraction
+        37: Parenthesized expression
+         37: Mathematical binary operation: subtraction
+           37: Mathematical binary operation: multiplication
+             37: Literal: null
+             37: Boolean literal: true
+           37: Integer literal: 100
+        37: Logical unary operation: logical negation
+         37: Mathematical unary operation: unary subtraction
+          37: Integer literal: 2

@@ -2,7 +2,7 @@ class Here_we_are extends We_wereThere
 {
 	int[] i;
 	
-	static void int bla()
+	static void bla()
 	{
 		break;
 		return;	

@@ -1,0 +1,187 @@
+Parsed stmt_ok_test.ic successfully!
+
+Abstract Syntax Tree: stmt_ok_test.ic
+
+1: Declaration of class: Here_we_are, subclass of We_wereThere
+  3: Declaration of virtual method: func1
+    3: Primitive data type: 1-dimensional array of int
+    3: Parameter: arg1
+     3: Primitive data type: int
+    3: Parameter: arg2
+     3: Primitive data type: boolean
+    5: Assignment statement
+      5: Reference to variable: a
+      5: Integer literal: 4
+    6: Assignment statement
+      6: Reference to variable: blabla, in external scope
+       6: Parenthesized expression
+        6: Mathematical binary operation: multiplication
+          6: Reference to variable: a
+          6: Integer literal: 2
+      6: Integer literal: 4
+    7: Assignment statement
+      7: Reference to array
+        7: Parenthesized expression
+         7: Mathematical binary operation: multiplication
+           7: Reference to variable: a
+           7: Reference to variable: b
+        7: Mathematical binary operation: addition
+          7: Integer literal: 4
+          7: Reference to variable: a
+      7: Integer literal: 4
+    9: Method call statement
+     9: Call to virtual method: method1, in external scope
+       9: Parenthesized expression
+        9: Mathematical binary operation: addition
+          9: Reference to variable: a
+          9: Reference to variable: b
+       9: Reference to variable: a
+       9: Reference to variable: b
+    10: Method call statement
+     10: Call to virtual method: method2, in external scope
+       10: Integer literal: 4
+    12: Method call statement
+     12: Call to static method: static1, in class A
+    13: Method call statement
+     13: Call to static method: static2, in class B
+       13: Reference to variable: a
+       13: Reference to variable: b
+       13: Mathematical binary operation: addition
+         13: Reference to variable: c
+         13: Reference to variable: a
+    15: Return statement
+    17: Return statement, with return value
+     17: Call to static method: static1, in class A
+    19: If statement
+      19: Mathematical binary operation: addition
+        19: Reference to variable: a
+        19: Integer literal: 4
+      19: Assignment statement
+        19: Reference to variable: a
+        19: Integer literal: 4
+    20: If statement, with Else operation
+      20: Mathematical binary operation: addition
+        20: Reference to variable: a
+        20: Integer literal: 4
+      20: Assignment statement
+        20: Reference to variable: a
+        20: Integer literal: 5
+      20: Assignment statement
+        20: Reference to variable: a
+        20: Integer literal: 6
+    21: If statement, with Else operation
+      21: Mathematical binary operation: addition
+        21: Reference to variable: a
+        21: Integer literal: 4
+      21: If statement, with Else operation
+        21: Mathematical binary operation: subtraction
+          21: Reference to variable: a
+          21: Reference to variable: b
+        21: Assignment statement
+          21: Reference to variable: a
+          21: Integer literal: 2
+        21: Break statement
+      21: If statement, with Else operation
+        21: Mathematical binary operation: subtraction
+          21: Reference to variable: b
+          21: Integer literal: 8
+        21: Return statement
+        21: Return statement, with return value
+         21: Integer literal: 4
+    23: If statement, with Else operation
+      23: Boolean literal: true
+      24: Block of statements
+        25: Continue statement
+        26: Break statement
+        27: Return statement
+        28: If statement
+          28: Boolean literal: false
+          30: Assignment statement
+            30: Reference to variable: a
+            30: Integer literal: 10
+      34: Block of statements
+        35: If statement
+          35: Boolean literal: true
+          35: If statement
+            35: Boolean literal: true
+            35: If statement, with Else operation
+              35: Boolean literal: true
+              35: Break statement
+              35: Return statement
+    41: If statement, with Else operation
+      41: Boolean literal: true
+      42: While statement
+        42: Boolean literal: false
+        43: Assignment statement
+          43: Reference to variable: a
+          43: Boolean literal: true
+      45: Assignment statement
+        45: Reference to variable: b
+        45: Boolean literal: true
+    47: While statement
+      47: Logical binary operation: less than
+        47: Reference to variable: a
+        47: Reference to variable: b
+      48: Block of statements
+        49: While statement
+          49: Boolean literal: false
+          50: Assignment statement
+            50: Reference to variable: n
+            50: Logical binary operation: equality
+              50: Boolean literal: true
+              50: Boolean literal: false
+    53: Block of statements
+      53: Block of statements
+        53: Block of statements
+          53: Block of statements
+            53: Block of statements
+              53: Block of statements
+                53: Block of statements
+                  53: Block of statements
+                    53: Block of statements
+                      53: Block of statements
+                        53: Block of statements
+                          53: Block of statements
+                            53: Block of statements
+                              53: Block of statements
+                                53: Block of statements
+                                  53: Block of statements
+                                    54: Break statement
+    57: Block of statements
+      57: Block of statements
+        57: Block of statements
+          57: Block of statements
+            57: Block of statements
+              57: Block of statements
+                57: Block of statements
+                  57: Block of statements
+                    57: Block of statements
+                      57: Block of statements
+                        57: Block of statements
+                          57: Block of statements
+                            57: Block of statements
+                              59: Declaration of local variable: b, with initial value
+                                59: Primitive data type: boolean
+                                59: Logical binary operation: equality
+                                  59: Boolean literal: true
+                                  59: Boolean literal: false
+    64: Block of statements
+      64: Block of statements
+        64: Declaration of local variable: k
+         64: Primitive data type: int
+        64: Block of statements
+          64: Block of statements
+            64: Block of statements
+              64: Declaration of local variable: i, with initial value
+                64: Primitive data type: int
+                64: Integer literal: 4
+              64: Block of statements
+                64: Block of statements
+                  64: Block of statements
+                    64: Block of statements
+                      64: Block of statements
+                        64: Block of statements
+                          64: Break statement
+          64: Declaration of local variable: j, with initial value
+            64: Primitive data type: int
+            64: Integer literal: 5

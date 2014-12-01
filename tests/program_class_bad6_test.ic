@@ -1,4 +1,4 @@
-class here_we_are extends We_wereThere
+class Here_we_are extends we_wereThere
 {
 	int[] i;
 	

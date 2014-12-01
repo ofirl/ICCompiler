@@ -1,0 +1,59 @@
+Parsed types_ok_test.ic successfully!
+
+Abstract Syntax Tree: types_ok_test.ic
+
+1: Declaration of class: Here_we_are, subclass of We_wereThere
+  3: Declaration of field: i
+   3: Primitive data type: int
+  4: Declaration of field: b
+   4: Primitive data type: boolean
+  5: Declaration of field: s
+   5: Primitive data type: string
+  6: Declaration of field: c
+   6: User-defined data type: Class
+  8: Declaration of field: ia
+   8: Primitive data type: 3-dimensional array of int
+  9: Declaration of field: ba
+   9: Primitive data type: 1-dimensional array of boolean
+  10: Declaration of field: sa
+   10: Primitive data type: 1-dimensional array of string
+  11: Declaration of field: caaaaa
+   11: User-defined data type: 8-dimensional array of ClassArray
+  13: Declaration of static method: funci
+    13: Primitive data type: int
+    13: Parameter: i
+     13: Primitive data type: int
+  14: Declaration of static method: funcb
+    14: Primitive data type: boolean
+    14: Parameter: b
+     14: Primitive data type: boolean
+  15: Declaration of static method: funcs
+    15: Primitive data type: string
+    15: Parameter: s
+     15: Primitive data type: string
+  16: Declaration of static method: funcc
+    16: User-defined data type: Class
+    16: Parameter: c
+     16: User-defined data type: Class
+  18: Declaration of static method: funcia
+    18: Primitive data type: 3-dimensional array of int
+    18: Parameter: ia
+     18: Primitive data type: 3-dimensional array of int
+  19: Declaration of static method: funcba
+    19: Primitive data type: 1-dimensional array of boolean
+    19: Parameter: ba
+     19: Primitive data type: 1-dimensional array of boolean
+  20: Declaration of static method: funcsa
+    20: Primitive data type: 1-dimensional array of string
+    20: Parameter: sa
+     20: Primitive data type: 1-dimensional array of string
+  21: Declaration of static method: funccaaaaa
+    21: User-defined data type: 8-dimensional array of ClassArray
+    21: Parameter: caaaaa
+     21: User-defined data type: 8-dimensional array of ClassArray
+  22: Declaration of static method: funccaaaaa
+    22: User-defined data type: 8-dimensional array of ClassArray
+    22: Parameter: caaaaa
+     22: User-defined data type: 8-dimensional array of ClassArray
+    22: Parameter: c
+     22: User-defined data type: C
