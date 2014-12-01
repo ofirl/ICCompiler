@@ -6,18 +6,20 @@ import java_cup.runtime.*;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 parser code  {:
-	/** Causes the parser to print every token it reads.
-	 * This is useful for debugging.
-	 */
-//	public boolean printTokens = true;
 	
 	private Lexer lexer;
+	private boolean encounteredError = false;
 
-	public libParser(Lexer lexer) {
+	public LibParser(Lexer lexer) {
 		super(lexer);
 		this.lexer = lexer;
+	}
+	
+	public boolean parserFailed() {
+		return encounteredError;
 	}
 	
 	// we can use it to get the line number of current token
@@ -30,19 +32,77 @@ parser code  {:
 		return lexer.getColumnNumber();
 	}
 	
-	public void syntax_error(Symbol s) {
-		Token tok = (Token) s;
-		System.out.println("Line " + tok.getLine()+": Syntax error; unexpected " + tok);
+	public static String parseString(String str) {
+		StringBuffer sb = new StringBuffer();
+		boolean writeChar = false;
+		int n = str.length();
+		for (int j = 1; j <= n - 2; j++) {
+			char c = str.charAt(j);
+			if (writeChar) {
+				if (c == 'n')
+					sb.append("\n");
+				else if (c == 't')
+					sb.append("\t");
+				else
+					sb.append(c);
+				
+				writeChar = false;
+			} else if (c != '\\') {
+				sb.append(c);
+			} else { // else str.charAt(j) == '\\'
+				writeChar = true;
+			}
+		}
+		return sb.toString();
 	}
+	
+	public void print_syntax_error(Token tok, List<String> sortedlst) {
+		StringBuffer sb = new StringBuffer();
+		
+		if (!sortedlst.isEmpty()) {
+			boolean firstStr = true;
+			for (String str : sortedlst) {
+				if (firstStr) {
+					firstStr = false;
+					sb.append("'" + str + "'");
+				} else {
+					sb.append(" or '" + str + "'");
+				}
+			}
+		}
+		String errMsg = "expected " + sb.toString() + ", but found '" + tok.getValue() + "'";
+		System.err.println(tok.getLine() + ":" + tok.getColumn() + " : " + errMsg);
+	}
+	
+	public void unrecovered_syntax_error(Symbol s) throws SyntaxError {
+		Token tok = (Token) s;
+		throw new SyntaxError("",tok.getLine(),tok.getColumn());
+	}
+	
+	public void syntax_error(Symbol s) {
+		List<Integer> expectedTags = expected_token_ids();
+		
+		if (expectedTags.isEmpty())
+			expectedTags = expected_token_ids();
+			
+		if (expectedTags.isEmpty())
+			expectedTags = expected_token_ids();
+		
+		List<String> sortedlst = new LinkedList<String>();
+		for (Integer n : expectedTags) {
+			String str = Token.convertTag(sym.terminalNames[n]);
+			if(str != null)
+				sortedlst.add(str);
+		}
+		
+		// sort sortedlst lexicographically
+		Collections.sort(sortedlst);
+		
+		print_syntax_error((Token) s, sortedlst);
+		encounteredError = true;
+	}
+	
 :}
-
-// This is just for debugging
-//scan with {:
-//	Token t = lexer.next_token();
-//	if (printTokens)
-//		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
-//	return t; 
-//:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
@@ -90,11 +150,13 @@ nonterminal List<Formal> formals; // list can't be empty
 libic ::= CLASS CLASS_ID:c LCBR libmethodList:lst RCBR
 		{: 
 			if(!c.equals("Library")) {
-				String errMsg = "expected 'Library', buf found '" + c + "'";
-				throw new SyntaxError(errMsg,cleft,cright);
+				encounteredError = true;
+				String errMsg = "expected 'Library', but found '" + c + "'";
+				System.err.println(cleft + ":" + cright + " : " + errMsg);
 			}
 			RESULT = new ICClass(cleft, c, new LinkedList<Field>(), lst); 
 		:}
+		| error LCBR libmethodList:lst RCBR
 ;
 
 libmethodList ::= libmethodList:lst libmethod:m
@@ -105,6 +167,7 @@ libmethodList ::= libmethodList:lst libmethod:m
 
 libmethod ::= STATIC typenvoid:t ID:method LP formalsList:f RP SEMI
 			{: RESULT = new LibraryMethod(t,method,f); :}
+			| error LP formalsList:f RP SEMI
 ;
 
 typenvoid ::= VOID:v {: RESULT = new PrimitiveType(getLine(),DataTypes.VOID); :}

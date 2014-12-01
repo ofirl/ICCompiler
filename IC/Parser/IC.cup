@@ -1,25 +1,25 @@
 package IC.Parser;
 
-import java.util.Collections;
 import IC.AST.*;
 import IC.*;
 import java_cup.runtime.*;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 parser code  {:
-	/** Causes the parser to print every token it reads.
-	 * This is useful for debugging.
-	 */
-//	public boolean printTokens = true;
 	
 	private Lexer lexer;
-	private List<String> sortedlst = new LinkedList<String>();
+	private boolean encounteredError = false;
 
-	public parser(Lexer lexer) {
+	public Parser(Lexer lexer) {
 		super(lexer);
 		this.lexer = lexer;
+	}
+	
+	public boolean parserFailed() {
+		return encounteredError;
 	}
 	
 	// we can use it to get the line number of current token
@@ -56,8 +56,7 @@ parser code  {:
 		return sb.toString();
 	}
 	
-	public void unrecovered_syntax_error(Symbol s) throws SyntaxError {
-		Token tok = (Token) s;
+	public void print_syntax_error(Token tok, List<String> sortedlst) {
 		StringBuffer sb = new StringBuffer();
 		
 		if (!sortedlst.isEmpty()) {
@@ -65,33 +64,45 @@ parser code  {:
 			for (String str : sortedlst) {
 				if (firstStr) {
 					firstStr = false;
-					sb.append("'" + Token.convertTag(str) + "'");
+					sb.append("'" + str + "'");
 				} else {
-					sb.append(" or '" + Token.convertTag(str) + "'");
+					sb.append(" or '" + str + "'");
 				}
 			}
 		}
 		String errMsg = "expected " + sb.toString() + ", but found '" + tok.getValue() + "'";
-		throw new SyntaxError(errMsg,tok.getLine(),tok.getColumn());
+		System.err.println(tok.getLine() + ":" + tok.getColumn() + " : " + errMsg);
+	}
+	
+	public void unrecovered_syntax_error(Symbol s) throws SyntaxError {
+		Token tok = (Token) s;
+		throw new SyntaxError("",tok.getLine(),tok.getColumn());
 	}
 	
 	public void syntax_error(Symbol s) {
 		List<Integer> expectedTags = expected_token_ids();
-		for (Integer n : expectedTags)
-			sortedlst.add(sym.terminalNames[n]);
+		
+		if (expectedTags.isEmpty())
+			expectedTags = expected_token_ids();
+			
+		if (expectedTags.isEmpty())
+			expectedTags = expected_token_ids();
+		
+		List<String> sortedlst = new LinkedList<String>();
+		for (Integer n : expectedTags) {
+			String str = Token.convertTag(sym.terminalNames[n]);
+			if(str != null)
+				sortedlst.add(str);
+		}
 		
 		// sort sortedlst lexicographically
 		Collections.sort(sortedlst);
+		
+		print_syntax_error((Token) s, sortedlst);
+		encounteredError = true;
 	}
+	
 :}
-
-// This is just for debugging
-//scan with {:
-//	Token t = lexer.next_token();
-//	if (printTokens)
-//		System.out.println(t.getLine() + ":" + t.getTagString() + ",\t" + t.getValue());
-//	return t; 
-//:};
 
 ////////////////////////////////////////////
 // Symbol list (terminals and non-terminals)
@@ -152,6 +163,7 @@ nonterminal Expression expr_op;
 nonterminal Literal literal;
 nonterminal Expression optionalReturnValue;
 nonterminal Statement optionalElse;
+nonterminal Statement limited_stmt;
 
 //////////////////////////
 // Precedence declarations
@@ -187,6 +199,7 @@ classDecl ::= CLASS CLASS_ID:c optionalExtends:ext LCBR fieldsnmethods:x RCBR
 			else
 				RESULT = new ICClass(cleft, c, x.getFields(), x.getMethods());
 		:}
+		| error LCBR fieldsnmethods:x RCBR
 ;
 
 optionalExtends ::= EXTENDS CLASS_ID:c
@@ -224,6 +237,7 @@ method ::= STATIC typenvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
 			{: RESULT = new VirtualMethod(t,i,f,s); :}
 			| virtualvoid:t ID:i LP formalsList:f RP LCBR stmt_list:s RCBR
 			{: RESULT = new VirtualMethod(t,i,f,s); :}
+			| error LP formalsList:f RP LCBR stmt_list:s RCBR
 ;
 
 virtualvoid ::= VOID:v
@@ -275,9 +289,9 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = c ; :}
 		| RETURN:i optionalReturnValue:or SEMI
 		{: RESULT = new Return(ileft,or); :}
-		| IF LP expr:cond RP stmt:s optionalElse:e
+		| IF LP expr:cond RP limited_stmt:s optionalElse:e
 		{: RESULT = new If(cond,s,e); :}
-		| WHILE LP expr:cond RP stmt:s
+		| WHILE LP expr:cond RP limited_stmt:s
 		{: RESULT = new While(cond,s) ; :}
 		| BREAK:i SEMI
 		{: RESULT = new Break(ileft) ; :}
@@ -285,9 +299,28 @@ stmt ::= type:t ID:i SEMI
 		{: RESULT = new Continue(ileft); :}
 		| LCBR:i stmt_list:sl RCBR
 		{: RESULT = new StatementsBlock(ileft,sl); :}
+		| error SEMI // error recovery
 ;
 
-optionalElse ::= ELSE stmt:s
+limited_stmt ::= location:l EQ expr:e SEMI
+				{: RESULT = new Assignment(l,e); :}
+				| callStatement:c SEMI
+				{: RESULT = c ; :}
+				| RETURN:i optionalReturnValue:or SEMI
+				{: RESULT = new Return(ileft,or); :}
+				| IF LP expr:cond RP limited_stmt:s optionalElse:e
+				{: RESULT = new If(cond,s,e); :}
+				| WHILE LP expr:cond RP limited_stmt:s
+				{: RESULT = new While(cond,s) ; :}
+				| BREAK:i SEMI
+				{: RESULT = new Break(ileft) ; :}
+				| CONTINUE:i SEMI
+				{: RESULT = new Continue(ileft); :}
+				| LCBR:i stmt_list:sl RCBR
+				{: RESULT = new StatementsBlock(ileft,sl); :}
+;
+
+optionalElse ::= ELSE limited_stmt:s
 		{: RESULT = s ; :}
 		| // epsilon
 		{: RESULT = null ; :}

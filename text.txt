@@ -2,9 +2,20 @@
 */
 
 class CLibrary {
-    void println(string s) {}
-    void print(string s) {}
-    void printi(int i) { + }
+	int x , y;
+    COOL[][] println (int  s)  {
+    	//int x = new CCE );
+    	//int x = +y + x + u;
+    	//int x = +6;
+    	//int x = 6 * [[8;
+    	if (true  C.x() ;
+    }
+    
+    void print(string s) {
+    	int x = 00;
+    	x = 3 - 6;
+    }
+    void printi(int i) { }
     int stoi(string s, int i) {}
    int random(int n) {}
    void exit(int n) {}
@@ -157,4 +168,4 @@ class Quicksort {
 	boolean k1, k2;
 	string s;
     
-}
+} 

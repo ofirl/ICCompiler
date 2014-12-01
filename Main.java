@@ -1,6 +1,5 @@
 import IC.AST.*;
 import IC.Parser.*;
-
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,9 +10,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		// List<Token> tokens = new LinkedList<Token>();
+		ASTNode libRoot;
+		ASTNode rootNode;
+
 		try {
 			// tokens = LexFile(args[0]);
-			
+
 			String libFile = "libic.sig";
 			if (args.length > 1) {
 				libFile = args[1];
@@ -26,14 +28,18 @@ public class Main {
 				libFile = libFile.substring(2); // skip the -L part
 			}
 
-			ASTNode libRoot = getLibraryAST(libFile, false);
-			ASTNode rootNode = getLibraryAST(args[0]);
+			libRoot = getLibraryAST(libFile, true);
+			rootNode = getLibraryAST(args[0]);
 			
+			if (libRoot == null)
+				return; // it means that we failed to parse the Library file
+
 		} catch (Exception e) {
 			if (e instanceof CompilerError) {
 				CompilerError ce = (CompilerError) e;
-				System.err.println(ce.getLine() + ":" + ce.getColumn() + " : "
-						+ ce.toString());
+				if (ce.shouldPrintMsg())
+					System.err.println(ce.getLine() + ":" + ce.getColumn()
+							+ " : " + ce.toString());
 			} else {
 				throw new RuntimeException("IO Error (brutal exit)"
 						+ e.toString());
@@ -46,11 +52,16 @@ public class Main {
 	// ############### Functions From PA2 ###############
 	// #############################################
 
+	// Returns null if there was a recoverable error.
 	public static ASTNode getLibraryAST(String libFile, boolean printAST)
 			throws Exception {
 		FileReader libReader = new FileReader(libFile);
-		libParser libps = new libParser(new Lexer(libReader));
-		Symbol libSym = libps.parse();
+		LibParser ps = new LibParser(new Lexer(libReader));
+		Symbol libSym = ps.parse();
+		
+		if (ps.parserFailed())
+			return null;
+		
 		ASTNode libRoot = (ASTNode) libSym.value;
 		if (printAST) {
 			Visitor libVisitor = new PrettyPrinter(libFile);
@@ -61,8 +72,12 @@ public class Main {
 
 	public static ASTNode getLibraryAST(String icFile) throws Exception {
 		FileReader txtFile = new FileReader(icFile);
-		parser ps = new parser(new Lexer(txtFile));
+		Parser ps = new Parser(new Lexer(txtFile));
 		Symbol mySym = ps.parse();
+
+		if (ps.parserFailed())
+			throw new SyntaxError("", 0, 0);
+
 		ASTNode rootNode = (ASTNode) mySym.value;
 		Visitor v = new PrettyPrinter(icFile);
 		System.out.println("Parsed " + icFile + " successfully!");

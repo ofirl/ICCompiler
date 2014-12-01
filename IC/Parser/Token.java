@@ -117,6 +117,7 @@ public class Token extends Symbol {
 		myMap.put("RB", "]");
 		myMap.put("LCBR", "{");
 		myMap.put("RCBR", "}");
+		myMap.put("EOF", "EOF");
 		
 		return myMap;
 	}
