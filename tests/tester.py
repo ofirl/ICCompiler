@@ -11,12 +11,13 @@ for f in filter(lambda x:x.endswith('.ic'),os.listdir('.')):
 	except subprocess.CalledProcessError,e:
 		retText = e.output
 	try:
-		if open(f[:-2]+'tokens','r').read() == retText.replace('\n','\r\n'):
+		if open(f[:-2]+'output','r').read() == retText.replace('\n','\r\n'):
 			print "Success on %s" % f
 		else:
 			print "Failed on %s" % f
 			open(f[:-2]+'result','w').write(retText.replace('\n','\r\n'))
 	except:
 		open(f[:-2]+'result','w').write(retText.replace('\n','\r\n'))
+		print "Error on %s" % f
 	
 

@@ -2,7 +2,7 @@ class Here_we_are extends We_wereThere
 {
 	int[] i;
 	
-	static void[] func1(A a, Array[] ar)
+	static void func1(A a, Array[] ar)
 	{
 		break;
 		return;	

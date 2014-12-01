@@ -1,0 +1,1 @@
+5:9 : syntax error ; expected 'CLASS_ID' or 'false' or '(' or '-' or '!' or 'new' or 'null' or 'STRING' or 'this' or 'true', but found 'class'

@@ -4,7 +4,7 @@ class Here_we_are extends We_wereThere
 	
 	string s1 = 4;
 
-	static void[] func1(A a, Array[] ar)
+	static void func1(A a, Array[] ar)
 	{
 		break;
 		return;	

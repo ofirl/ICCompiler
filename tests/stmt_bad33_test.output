@@ -1,0 +1,1 @@
+5:6 : syntax error ; expected 'boolean' or 'break' or 'CLASS_ID' or 'continue' or 'false' or 'if' or 'int' or '{' or '(' or '-' or '!' or 'new' or 'null' or '}' or 'return' or 'STRING' or 'string' or 'this' or 'true' or 'while', but found ';'

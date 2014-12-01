@@ -1,0 +1,30 @@
+Parsed program_class_ok1_test.ic successfully!
+
+Abstract Syntax Tree: program_class_ok1_test.ic
+
+1: Declaration of class: Here_we_are, subclass of We_wereThere
+  3: Declaration of field: i
+   3: Primitive data type: 1-dimensional array of int
+  12: Declaration of field: s
+   12: Primitive data type: string
+  13: Declaration of field: b
+   13: Primitive data type: boolean
+  13: Declaration of field: b2
+   13: Primitive data type: boolean
+  13: Declaration of field: b3
+   13: Primitive data type: boolean
+  14: Declaration of field: ba
+   14: Primitive data type: 1-dimensional array of boolean
+  5: Declaration of static method: func1
+    5: Primitive data type: void
+    5: Parameter: a
+     5: User-defined data type: A
+    5: Parameter: ar
+     5: User-defined data type: 1-dimensional array of Array
+    7: Return statement
+    8: Break statement
+  16: Declaration of virtual method: func2
+    16: Primitive data type: boolean
+  19: Declaration of virtual method: func3
+    19: Primitive data type: 1-dimensional array of boolean
+24: Declaration of class: We_wereThere
